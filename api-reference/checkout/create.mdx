@@ -1,0 +1,38 @@
+---
+title: Create checkout
+api: POST /v1/checkout/
+description: Create a short-lived settlement order.
+---
+
+Uses the partner **checkout key** as `x-api-key`. Parameters are passed as **query params**.
+
+Orders expire in about **7 minutes**.
+
+<ParamField query="network" type="string" required>
+  Settlement network name.
+</ParamField>
+
+<ParamField query="asset" type="string" required>
+  Asset symbol (e.g. `USDC`, `USDT`).
+</ParamField>
+
+<ParamField query="currency_code" type="string" required>
+  Fiat currency context, e.g. `KES`.
+</ParamField>
+
+<ParamField query="amount" type="number" required>
+  Order amount.
+</ParamField>
+
+<ParamField query="order_id" type="string" required>
+  Your unique order identifier.
+</ParamField>
+
+Response includes settlement `address`, `rate`, USD `amount`, and `expires_in`.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/checkout/?network=CELO&asset=USDT&currency_code=KES&amount=1000&order_id=order_123" \
+  -H "x-api-key: YOUR_CHECKOUT_KEY"
+```
+</RequestExample>

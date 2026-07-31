@@ -1,0 +1,20 @@
+---
+title: Supported banks
+api: POST /v1/banks/{currency_code}
+description: List supported banks for a currency (defaults to NGN).
+---
+
+<ParamField path="currency_code" type="string">
+  Defaults to `NGN` when omitted.
+</ParamField>
+
+Returns a list of banks (codes and names) usable with validation and payout fields.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/banks/NGN" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

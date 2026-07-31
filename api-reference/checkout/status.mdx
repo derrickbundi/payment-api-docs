@@ -1,0 +1,20 @@
+---
+title: Checkout status
+api: POST /v1/checkout/status
+description: Get checkout order status by order_id.
+---
+
+Auth: **checkout key**. Query parameter:
+
+<ParamField query="order_id" type="string" required>
+  Order id from create checkout.
+</ParamField>
+
+Statuses: `PENDING`, `EXPIRED`, `CANCELLED`, `FAILED`, `COMPLETE`.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/checkout/status?order_id=order_123" \
+  -H "x-api-key: YOUR_CHECKOUT_KEY"
+```
+</RequestExample>

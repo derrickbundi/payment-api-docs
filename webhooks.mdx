@@ -1,0 +1,59 @@
+---
+title: Webhooks
+description: Outbound callbacks for transaction and checkout status.
+icon: "webhook"
+iconType: "solid"
+---
+
+Pretium posts JSON to your callback URL when a payment reaches a terminal or updated state. Configure a default webhook in the partner portal, and/or pass `callback_url` per request.
+
+## Delivery
+
+- Method: `POST`
+- Timeout: ~3 seconds connect + read
+- Retries: not guaranteed on failure (failed deliveries are logged; you can recall some callbacks from the portal)
+
+Always treat webhooks as **at-least-once** hints and reconcile with the status API.
+
+## Transaction callback
+
+Typical payload for collect / disburse / offramp flows:
+
+```json
+{
+  "status": "COMPLETE",
+  "transaction_code": "a1b2c3d4-....",
+  "receipt_number": "QJK7...",
+  "message": "Payment successful",
+  "public_name": "JOHN DOE"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `status` | e.g. `COMPLETE`, `FAILED`, `PENDING`, `PROCESSING` |
+| `transaction_code` | Your reference / Pretium transaction id |
+| `receipt_number` | Provider receipt when available |
+| `message` | Human-readable status detail |
+| `public_name` | Resolved account / wallet name when available |
+
+## Checkout callback
+
+```json
+{
+  "status": "COMPLETE",
+  "order_id": "order_123",
+  "message": "Settlement complete"
+}
+```
+
+`status` may be `COMPLETE` or `FAILED` (and related checkout states during the lifecycle).
+
+## Verifying outcomes
+
+Do not trust the webhook alone for money movement. Confirm with:
+
+- [`POST /v1/status/{currency}`](/api-reference/payments/status)
+- [`POST /account/{country_code}/transaction`](/api-reference/account/transaction)
+- [`POST /v1/checkout/status`](/api-reference/checkout/status)
+- For AI agent payouts: use MCP tools such as `get_order_status` / `get_agent_fiat_order_status` ([MCP guide](/guides/agents))

@@ -1,0 +1,38 @@
+---
+title: Account FX convert
+api: POST /account/exchange-rate
+description: Convert an amount using selling or buying rate direction.
+---
+
+Provide either a selling-rate conversion or a buying-rate conversion.
+
+### Selling (`from` fiat → quote)
+
+<ParamField body="selling_rate" type="number">
+  Amount in the `from` currency.
+</ParamField>
+
+<ParamField body="from" type="string">
+  Source currency code.
+</ParamField>
+
+### Buying (`to` fiat ← quote)
+
+<ParamField body="buying_rate" type="number">
+  Amount toward the `to` currency.
+</ParamField>
+
+<ParamField body="to" type="string">
+  Destination currency code.
+</ParamField>
+
+Response includes `from`, `to`, and computed `rate`.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/exchange-rate" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"selling_rate":100,"from":"KES"}'
+```
+</RequestExample>

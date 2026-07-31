@@ -1,0 +1,16 @@
+---
+title: Networks
+api: POST /account/networks
+description: Supported blockchain networks and assets.
+---
+
+Each network includes name, icon, settlement wallet address, checkout status, and assets.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/networks" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

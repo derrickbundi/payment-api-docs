@@ -1,0 +1,51 @@
+---
+title: Exchange rate (v2)
+api: POST /v2/exchange-rate
+description: FX rates plus onramp/offramp availability flags.
+---
+
+Same rates as v1, with booleans indicating whether ramps are currently active for the market.
+
+<ParamField body="currency_code" type="string" required>
+  Currency code such as `KES` or `UGX` (case-insensitive).
+</ParamField>
+
+<ResponseField name="data.buying_rate" type="number">
+  Buying rate.
+</ResponseField>
+
+<ResponseField name="data.selling_rate" type="number">
+  Selling rate.
+</ResponseField>
+
+<ResponseField name="data.is_offramp_active" type="boolean">
+  `true` when offramp is not payment-locked.
+</ResponseField>
+
+<ResponseField name="data.is_onramp_active" type="boolean">
+  `true` when onramp is not payment-locked.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v2/exchange-rate" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"currency_code":"KES"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Exchange rates",
+  "data": {
+    "buying_rate": 129.5,
+    "selling_rate": 131.2,
+    "is_offramp_active": true,
+    "is_onramp_active": true
+  }
+}
+```
+</ResponseExample>

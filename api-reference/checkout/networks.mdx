@@ -1,0 +1,16 @@
+---
+title: Checkout networks
+api: POST /v1/checkout/networks
+description: List networks available for checkout settlement.
+---
+
+Auth: **checkout key**. No parameters required.
+
+Returns a networks resource (names, assets, settlement details).
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/checkout/networks" \
+  -H "x-api-key: YOUR_CHECKOUT_KEY"
+```
+</RequestExample>

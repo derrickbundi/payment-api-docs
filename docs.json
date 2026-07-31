@@ -1,0 +1,168 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Pretium",
+  "description": "API documentation for Pretium payment rails \u2014 offramp, onramp, checkout, and MCP for AI agents in Cursor, Claude, and ChatGPT.",
+  "colors": {
+    "primary": "#0B6E4F",
+    "light": "#12A974",
+    "dark": "#085A40"
+  },
+  "logo": {
+    "light": "/public/logo.png",
+    "dark": "/public/logo.png",
+    "href": "/"
+  },
+  "favicon": "public/logo.png",
+  "icons": {
+    "library": "fontawesome"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "icon": "book-open",
+        "iconType": "solid",
+        "groups": [
+          {
+            "group": "Get started",
+            "icon": "compass",
+            "iconType": "solid",
+            "pages": [
+              "index",
+              "onboarding",
+              "quickstart",
+              "authentication",
+              "errors",
+              "webhooks",
+              "networks",
+              "mnos",
+              "fee"
+            ]
+          },
+          {
+            "group": "Guides",
+            "icon": "map",
+            "iconType": "solid",
+            "pages": [
+              "guides/offramp",
+              "guides/onramp",
+              "guides/checkout",
+              "guides/agents",
+              "guides/collection-and-disbursements"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/overview"
+            ]
+          },
+          {
+            "group": "Rates",
+            "pages": [
+              "api-reference/rates/exchange-rate",
+              "api-reference/rates/exchange-rate-v2"
+            ]
+          },
+          {
+            "group": "Payments (v1)",
+            "pages": [
+              "api-reference/payments/validation",
+              "api-reference/payments/pay",
+              "api-reference/payments/onramp",
+              "api-reference/payments/status",
+              "api-reference/payments/transactions",
+              "api-reference/payments/banks",
+              "api-reference/payments/refund"
+            ]
+          },
+          {
+            "group": "Account",
+            "pages": [
+              "api-reference/account/detail",
+              "api-reference/account/wallet",
+              "api-reference/account/countries",
+              "api-reference/account/networks",
+              "api-reference/account/transaction",
+              "api-reference/account/transactions",
+              "api-reference/account/exchange-rate"
+            ]
+          },
+          {
+            "group": "Checkout",
+            "pages": [
+              "api-reference/checkout/create",
+              "api-reference/checkout/status",
+              "api-reference/checkout/pay",
+              "api-reference/checkout/networks"
+            ]
+          },
+          {
+            "group": "Collection & disbursement",
+            "pages": [
+              "api-reference/countries/collection-and-disbursement"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "mdx": {
+      "server": "https://api.xwift.africa",
+      "auth": {
+        "method": "key",
+        "name": "x-api-key"
+      }
+    },
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "javascript",
+        "python"
+      ]
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Partner portal",
+        "href": "https://merchant.xwift.africa"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {}
+  },
+  "redirects": [
+    {
+      "source": "/utilities/networks",
+      "destination": "/networks"
+    },
+    {
+      "source": "/fee-field/fee",
+      "destination": "/fee"
+    },
+    {
+      "source": "/utilities/mnos",
+      "destination": "/mnos"
+    },
+    {
+      "source": "/api-reference/countries/payout-and-payin",
+      "destination": "/api-reference/countries/collection-and-disbursement"
+    },
+    {
+      "source": "/guides/country-apis",
+      "destination": "/guides/collection-and-disbursements"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+---
+title: Errors
+description: Standard error envelope and common failure modes.
+icon: "circle-exclamation"
+iconType: "solid"
+---
+
+## Envelope
+
+```json
+{
+  "code": 400,
+  "message": "The amount field is required."
+}
+```
+
+Success responses add a `data` field:
+
+```json
+{
+  "code": 200,
+  "message": "OK",
+  "data": {}
+}
+```
+
+| HTTP / `code` | Meaning |
+|---------------|---------|
+| `200` | Success |
+| `201` | Created |
+| `400` | Validation or business-rule failure |
+| `401` | Invalid or missing API key |
+| `403` | Account deactivated or forbidden |
+| `404` | Resource not found |
+
+## Common messages
+
+| Message | Cause |
+|---------|-------|
+| `Unauthorized` | Bad `x-api-key` |
+| `Account deactivated` | Partner status off |
+| `Country not supported.` | Unknown `currency_code` |
+| `Destination country not defined in payment gateway!` | Unsupported currency on `/v1/pay` |
+| `Unsupported network. Allowed networks: ...` | Invalid `chain` |
+| Hash already processed | `transaction_hash` reused (idempotent block via `master_hashes`) |
+| Payment lock / maintenance messages | Country ramp temporarily disabled |
+
+Validation failures usually return the first Laravel validator error string as `message`.
+
+## Idempotency
+
+- Optional `reference` — if omitted, a UUID is generated for many money-moving calls.
+- `transaction_hash` — cannot be processed twice for offramp / checkout settlement.
+- Checkout `order_id` — must be unique per partner order.
+
+There is no general `Idempotency-Key` header.

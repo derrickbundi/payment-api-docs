@@ -1,0 +1,70 @@
+---
+title: Validation
+api: POST /v1/validation/{currency_code}
+description: Validate a mobile money shortcode or bank account before payout.
+---
+
+Resolves account names / validity for the destination currency. Defaults to Kenya (`KES`) rules when the path currency is omitted.
+
+<ParamField path="currency_code" type="string">
+  `KES`, `UGX`, `NGN`, `GHS`, etc.
+</ParamField>
+
+## Body by currency
+
+### KES (default)
+
+<ParamField body="shortcode" type="string" required>
+  Phone or till / paybill number.
+</ParamField>
+
+<ParamField body="type" type="string" required>
+  `MOBILE`, `PAYBILL`, or `BUY_GOODS`.
+</ParamField>
+
+<ParamField body="mobile_network" type="string">
+  Required for `MOBILE`: `Safaricom` or `Airtel`.
+</ParamField>
+
+### UGX
+
+<ParamField body="shortcode" type="string" required>
+  10-digit phone number.
+</ParamField>
+
+<ParamField body="mobile_network" type="string" required>
+  `MTN` or `Airtel`.
+</ParamField>
+
+### NGN
+
+<ParamField body="account_number" type="string" required>
+  Bank account number.
+</ParamField>
+
+<ParamField body="bank_code" type="string" required>
+  Bank code from the banks list.
+</ParamField>
+
+### GHS
+
+<ParamField body="shortcode" type="string" required>
+  10-digit mobile number.
+</ParamField>
+
+<ParamField body="mobile_network" type="string" required>
+  `MTN`, `AirtelTigo`, or `Telecel`.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/validation/KES" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shortcode": "254712345678",
+    "type": "MOBILE",
+    "mobile_network": "Safaricom"
+  }'
+```
+</RequestExample>

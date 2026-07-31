@@ -1,0 +1,13 @@
+{
+  "name": "payment-api-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mintlify documentation for Pretium.",
+  "scripts": {
+    "dev": "mint dev",
+    "validate": "mint broken-links"
+  },
+  "devDependencies": {
+    "mint": "^4.2.768"
+  }
+}

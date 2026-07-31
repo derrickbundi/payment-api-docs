@@ -1,0 +1,41 @@
+---
+title: Checkout
+description: Hosted settlement flow using your checkout key.
+icon: "cart-shopping"
+iconType: "solid"
+---
+
+Checkout creates a short-lived order (about **7 minutes**) with a settlement address. The payer sends assets on-chain; you confirm with the transaction hash.
+
+## Auth
+
+Use your **checkout key** as `x-api-key` (not the consumer key).
+
+## Flow
+
+1. [`POST /v1/checkout/`](/api-reference/checkout/create) — create order (`network`, `asset`, `currency_code`, `amount`, `order_id`).
+2. Show the returned settlement `address` and amount to the payer.
+3. [`POST /v1/checkout/pay`](/api-reference/checkout/pay) — submit `order_id` + `transaction_hash` after on-chain payment.
+4. [`POST /v1/checkout/status`](/api-reference/checkout/status) — poll until `COMPLETE`, `EXPIRED`, `FAILED`, or `CANCELLED`.
+
+Query parameters are used on these POST endpoints (not only JSON body).
+
+## Statuses
+
+`PENDING` → `COMPLETE` | `EXPIRED` | `CANCELLED` | `FAILED`
+
+## Networks
+
+List supported settlement networks with [`POST /v1/checkout/networks`](/api-reference/checkout/networks).
+
+## Webhooks
+
+On completion or failure Pretium may POST:
+
+```json
+{
+  "status": "COMPLETE",
+  "order_id": "order_123",
+  "message": "Settlement complete"
+}
+```

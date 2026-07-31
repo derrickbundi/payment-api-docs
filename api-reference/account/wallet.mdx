@@ -1,0 +1,20 @@
+---
+title: Wallet balance
+api: POST /account/wallet/{country_id}
+description: Fiat wallet balance for a country.
+---
+
+<ParamField path="country_id" type="integer" required>
+  Country id `1`–`10` (see [API overview](/api-reference/overview#country-ids-account-wallet)).
+</ParamField>
+
+Returns balance, currency code, and country name for that wallet.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/wallet/1" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

@@ -1,0 +1,70 @@
+---
+title: Offramp
+description: Convert on-chain stablecoin deposits into local fiat payouts.
+icon: "arrow-up-from-bracket"
+iconType: "solid"
+---
+
+Offramp uses the unified `/v1` API: verify an on-chain transfer, then disburse to mobile money or bank accounts.
+
+## Flow
+
+```mermaid
+sequenceDiagram
+  participant App as Your backend
+  participant Chain as Blockchain
+  participant API as Pretium API
+  participant Rail as Mobile money / bank
+
+  App->>API: POST /v1/validation/{currency}
+  API-->>App: Account name / validity
+  Note over App,Chain: Customer sends USDT/USDC
+  App->>API: POST /v1/pay/{currency} + transaction_hash
+  API->>Chain: Verify hash
+  API->>Rail: Disburse fiat
+  API-->>App: Status + transaction_code
+  API->>App: Webhook (optional)
+```
+
+## Steps
+
+1. **Validate** the destination with [`POST /v1/validation/{currency_code}`](/api-reference/payments/validation).
+2. **Quote** with [`POST /v1/exchange-rate`](/api-reference/rates/exchange-rate) or v2 for ramp locks.
+3. Customer (or your treasury) sends stablecoins to our settlement address on a supported network.
+4. Call [`POST /v1/pay/{currency_code}`](/api-reference/payments/pay) with `transaction_hash` and payout fields.
+5. Poll [`POST /v1/status/{currency_code}`](/api-reference/payments/status) or handle [webhooks](/webhooks).
+
+## Supported networks (pay)
+
+`BASE`, `CELO` (default), `STELLAR`, `POLYGON`, `SOLANA`, `ETHEREUM`, `BNB`, `AVALANCHE`, `ARBITRUM`
+
+## Amount limits (pay)
+
+| Currency | Min | Max | Notes |
+|----------|-----|-----|-------|
+| KES | 20 | 250,000 | `MOBILE`, `PAYBILL`, `BUY_GOODS`, `BANK_TRANSFER` |
+| UGX | 500 | 5,000,000 | 10-digit `shortcode`, MTN / Airtel |
+| NGN | 100 | 1,000,000 | Bank account fields required |
+| GHS | 5 | 1,000 | MTN / AirtelTigo / Telecel |
+| ETB | 5 | 5,000 | Telebirr / Cbe Birr / MPESA |
+| MWK | 100 | 5,000,000 | Mobile or bank transfer |
+| CDF | 2,800 | 280,000 | Optional `currency` CDF/USD |
+
+## Example (KES mobile)
+
+```bash
+curl -X POST "{{base_url}}/v1/pay/KES" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "transaction_hash": "0xabc...",
+    "chain": "CELO",
+    "type": "MOBILE",
+    "shortcode": "254712345678",
+    "amount": 1000,
+    "mobile_network": "Safaricom",
+    "callback_url": "https://example.com/hooks/pretium"
+  }'
+```
+
+Reuse of the same `transaction_hash` is rejected once it has been processed.

@@ -1,0 +1,55 @@
+---
+title: Quickstart
+description: Authenticate and fetch an exchange rate in a few minutes.
+icon: "bolt"
+iconType: "solid"
+---
+
+## 1. Get your API key
+
+Sign in to the [partner portal](https://merchant.xwift.africa) and copy your **consumer key** from API keys. You will send it as the `x-api-key` header on every partner request.
+
+## 2. Fetch an exchange rate
+
+```bash
+curl -X POST "{{base_url}}/v1/exchange-rate" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"currency_code":"KES"}'
+```
+
+Example response:
+
+```json
+{
+  "code": 200,
+  "message": "Exchange rates",
+  "data": {
+    "buying_rate": 129.5,
+    "selling_rate": 131.2
+  }
+}
+```
+
+- **Buying rate** — used when you buy fiat with crypto (offramp pricing context).
+- **Selling rate** — used when you sell fiat for crypto (onramp pricing context).
+
+For ramp availability flags, use [`POST /v2/exchange-rate`](/api-reference/rates/exchange-rate-v2).
+
+## 3. Typical offramp flow
+
+1. Validate the destination with [`POST /v1/validation/{currency}`](/api-reference/payments/validation).
+2. Receive a stablecoin payment on a supported chain.
+3. Call [`POST /v1/pay/{currency}`](/api-reference/payments/pay) with the `transaction_hash` and payout details.
+4. Poll [`POST /v1/status/{currency}`](/api-reference/payments/status) or wait for a [webhook](/webhooks).
+
+See the [offramp guide](/guides/offramp) for currency-specific fields and limits.
+
+## 4. Explore further
+
+| Goal | Start here |
+|------|------------|
+| Collect fiat → send crypto | [Onramp guide](/guides/onramp) |
+| Hosted settlement UI | [Checkout guide](/guides/checkout) |
+| AI agents in Cursor / Claude / ChatGPT | [MCP guide](/guides/agents) |
+| Direct mobile money / bank rails | [Collection & disbursements](/guides/collection-and-disbursements) |

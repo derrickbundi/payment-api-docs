@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+.mintlify/
+
+# OS / editor
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Env
+.env
+.env.*

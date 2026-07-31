@@ -1,0 +1,57 @@
+---
+title: Authentication
+description: API keys and checkout keys for Pretium.
+icon: "lock"
+iconType: "solid"
+---
+
+All partner HTTP APIs authenticate with an API key header.
+
+## Partner API key
+
+Send your portal **consumer key** as:
+
+```
+x-api-key: YOUR_CONSUMER_KEY
+```
+
+Used by `/v1`, `/v2`, `/account`, `/{currency}`, and `/utility`.
+
+| Status | Response |
+|--------|----------|
+| Missing / invalid key | `401` `{ "code": 401, "message": "Unauthorized" }` |
+| Partner deactivated | `403` `{ "code": 403, "message": "Account deactivated" }` |
+
+## Checkout key
+
+Checkout endpoints under `/v1/checkout` use your portal **checkout key** in the same header:
+
+```
+x-api-key: YOUR_CHECKOUT_KEY
+```
+
+Do not use the consumer key on checkout routes (and vice versa).
+
+## AI agents (MCP)
+
+Cursor, Claude, and ChatGPT do not call these headers directly. Configure the [Pretium MCP server](/guides/agents); it uses your partner API key (and secret key for `register_agent`) on your behalf.
+
+## Request headers
+
+| Header | Required | Value |
+|--------|----------|-------|
+| `x-api-key` | Yes | Consumer key or checkout key |
+| `Content-Type` | Yes (JSON bodies) | `application/json` |
+
+## IP allowlisting
+
+You can register allowed IPs in the partner portal. Prefer allowing only your production egress IPs.
+
+## Keys in the portal
+
+From the merchant portal you can:
+
+- View / rotate the consumer key
+- View the checkout key
+- View the secret key (for MCP `register_agent`)
+- Configure webhook URLs and IP allowlists

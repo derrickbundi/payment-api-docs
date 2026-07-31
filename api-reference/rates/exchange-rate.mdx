@@ -1,0 +1,49 @@
+---
+title: Exchange rate
+api: POST /v1/exchange-rate
+description: Get buying and selling FX rates for a currency.
+---
+
+Returns partner-category FX rates for a supported currency.
+
+<ParamField body="currency_code" type="string" required>
+  ISO-style currency code, e.g. `KES`, `UGX`, `NGN`.
+</ParamField>
+
+<ResponseField name="code" type="number">
+  `200` on success.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status.
+</ResponseField>
+
+<ResponseField name="data.buying_rate" type="number">
+  Rate used in buying/offramp contexts.
+</ResponseField>
+
+<ResponseField name="data.selling_rate" type="number">
+  Rate used in selling/onramp contexts.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/exchange-rate" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"currency_code":"KES"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Exchange rates",
+  "data": {
+    "buying_rate": 129.5,
+    "selling_rate": 131.2
+  }
+}
+```
+</ResponseExample>

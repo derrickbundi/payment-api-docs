@@ -1,0 +1,27 @@
+---
+title: Refund
+api: POST /v1/refund
+description: Initiate a refund/credit flow against a verified on-chain hash.
+---
+
+<ParamField body="transaction_hash" type="string" required>
+  Original on-chain transaction hash.
+</ParamField>
+
+<ParamField body="chain" type="string" required>
+  Chain of the original transfer.
+</ParamField>
+
+Verifies the hash and runs the partner refund/credit path when eligible.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/refund" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "transaction_hash": "0xabc123",
+    "chain": "CELO"
+  }'
+```
+</RequestExample>

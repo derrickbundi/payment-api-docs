@@ -1,0 +1,24 @@
+---
+title: Transaction status
+api: POST /v1/status/{currency_code}
+description: Look up a single transaction by transaction_code.
+---
+
+<ParamField path="currency_code" type="string">
+  Currency namespace for the transaction store (e.g. `KES`, `UGX`).
+</ParamField>
+
+<ParamField body="transaction_code" type="string" required>
+  Transaction code returned when the payment was created.
+</ParamField>
+
+Returns a [transaction resource](/api-reference/overview#transaction-object).
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/status/KES" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"transaction_code":"a1b2c3d4-e5f6-7890-abcd-ef1234567890"}'
+```
+</RequestExample>

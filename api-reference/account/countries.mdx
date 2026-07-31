@@ -1,0 +1,16 @@
+---
+title: Countries
+api: POST /account/countries
+description: List countries available to the partner.
+---
+
+Returns `id`, `name`, `currency_code`, and `phone_code` for each country.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/countries" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

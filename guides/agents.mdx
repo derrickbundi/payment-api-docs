@@ -1,0 +1,171 @@
+---
+title: AI agents (MCP)
+description: Add Pretium as an MCP server in Cursor, Claude, or ChatGPT so agents can pay across African rails.
+icon: "robot"
+iconType: "solid"
+---
+
+Pretium ships a **Model Context Protocol (MCP)** server so AI tools can call payment capabilities as tools — not as a REST API you wire into your app.
+
+Connect it once in **Cursor**, **Claude**, or **ChatGPT**. Your agent can then register a Pretium agent, set spend limits, validate recipients, check balances, and send fiat or stablecoin payouts through normal chat.
+
+Hosted endpoint: [`https://mcp.pretium.africa/mcp`](https://mcp.pretium.africa/mcp)  
+Open source: [github.com/derrickbundi/pretium-mcp](https://github.com/derrickbundi/pretium-mcp)
+
+## What agents can do
+
+| Capability | Tools |
+|------------|--------|
+| FX rates | `get_exchange_rates` |
+| Off-ramp orders | `create_order`, `confirm_order`, `get_order_status` |
+| Validate recipients | `validate_phone_number`, `validate_bank_account` |
+| Agent lifecycle | `register_agent`, `create_agent_spend_policy`, `get_agent` |
+| Balances & payouts | `get_agent_balance`, `agent_create_fiat_order`, `get_agent_fiat_order_status`, `agent_create_stablecoin_order` |
+
+Fiat agent payouts today: **KES**, **UGX**, **NGN** (mobile money, paybill, buy goods, bank transfer). Stablecoins: **USDT/USDC** on **Celo**, **Base**, **BNB**.
+
+## Prerequisites
+
+1. A Pretium **partner** account and **API key** (used by the MCP server as `x-api-key`).
+2. For agent tools: a partner **secret key** from the portal (used by `register_agent`).
+3. An ERC-20 settlement wallet configured in the partner portal (for agent stablecoin flows).
+
+You do **not** call `/mcp/agent/*` HTTP routes from your product. The MCP server wraps those for the AI client.
+
+## Add in Cursor
+
+1. Open **Cursor Settings → MCP** (or edit `~/.cursor/mcp.json` / project `.cursor/mcp.json`).
+2. Add the Pretium server:
+
+```json
+{
+  "mcpServers": {
+    "pretium": {
+      "url": "https://mcp.pretium.africa/mcp"
+    }
+  }
+}
+```
+
+For a local [pretium-mcp](https://github.com/derrickbundi/pretium-mcp) instance:
+
+```json
+{
+  "mcpServers": {
+    "pretium": {
+      "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+3. Restart Cursor (or reload MCP). You should see Pretium tools listed under the server.
+4. Ask the agent things like: “Register my Pretium agent and check the UGX balance.”
+
+Also listed on [cursor.directory](https://cursor.directory/plugins/pretium-mcp) for discovery.
+
+## Add in Claude
+
+### Claude Desktop
+
+Edit your Claude Desktop MCP config (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "pretium": {
+      "url": "https://mcp.pretium.africa/mcp"
+    }
+  }
+}
+```
+
+Restart Claude Desktop. Pretium tools appear in the MCP tools list for the conversation.
+
+### Claude Code / CLI
+
+```bash
+claude mcp add --transport http pretium https://mcp.pretium.africa/mcp
+```
+
+If your Claude build only supports stdio MCP, run [pretium-mcp](https://github.com/derrickbundi/pretium-mcp) locally and point the client at its Streamable HTTP or SSE URL (see below).
+
+## Add in ChatGPT
+
+1. Open ChatGPT settings for **Apps / Connectors** (or Custom GPT actions that support MCP, depending on your plan).
+2. Add a new MCP connector with URL:
+
+```
+https://mcp.pretium.africa/mcp
+```
+
+3. Allow the Pretium tools you need (rates, validation, agent payouts).
+4. In chat, instruct the model to use Pretium for African payouts — for example: “Validate this Safaricom number, then pay 500 KES from my agent.”
+
+If ChatGPT requires OAuth or a verified connector for remote MCP, use a self-hosted [pretium-mcp](https://github.com/derrickbundi/pretium-mcp) behind your own auth, or contact [hello@pretium.africa](mailto:hello@pretium.africa) for partner MCP access.
+
+## Self-host (optional)
+
+```bash
+git clone https://github.com/derrickbundi/pretium-mcp
+cd pretium-mcp
+npm install
+# set PRETIUM_API_KEY (and optional PRETIUM_API_BASE_URL) in .env
+npm run dev
+```
+
+| Transport | URL | Clients |
+|-----------|-----|---------|
+| Streamable HTTP | `POST http://localhost:3000/mcp` | Cursor, modern Claude |
+| SSE | `GET http://localhost:3000/sse` + `POST /messages` | Legacy SSE-only clients |
+
+Do not expose a self-hosted MCP publicly without auth — it acts with your partner API key.
+
+## Typical chat workflows
+
+**Register and pay fiat**
+
+```text
+register_agent → create_agent_spend_policy → validate_phone_number
+  → agent_create_fiat_order → get_agent_fiat_order_status
+```
+
+**Stablecoin transfer**
+
+```text
+register_agent → create_agent_spend_policy → get_agent_balance
+  → agent_create_stablecoin_order
+```
+
+**Off-ramp (crypto → fiat)**
+
+```text
+create_order → (user pays on-chain) → confirm_order → get_order_status
+```
+
+Approvals above auto-approve limits are handled in the [partner portal](https://merchant.xwift.africa).
+
+## Fiat payout field cheat sheet
+
+| `type` | Required fields |
+|--------|-----------------|
+| `mobile` | `shortcode`, `mobile_network` |
+| `paybill` | `shortcode`, `account_number` |
+| `buy_goods` | `shortcode` |
+| `bank_transfer` | `bank_code`, `account_number`, `account_name` |
+
+| Currency | Allowed types |
+|----------|----------------|
+| UGX | `mobile` only |
+| KES | `mobile`, `paybill`, `buy_goods`, `bank_transfer` |
+| NGN | `bank_transfer` only |
+
+## REST Pretium vs MCP
+
+| | Pretium (this docs site) | Pretium MCP |
+|--|--------------------------|-------------|
+| Audience | Your backend / product | Cursor, Claude, ChatGPT agents |
+| Auth | `x-api-key` on each HTTP call | MCP server holds the key; tools are invoked by the AI client |
+| Shape | REST JSON under `/v1`, `/account`, … | MCP tools (`register_agent`, `create_order`, …) |
+
+Use the [Pretium API reference](/api-reference/overview) when you are building a product integration. Use **MCP** when you want an AI assistant to operate Pretium for you.

@@ -1,0 +1,59 @@
+---
+title: Onramp
+api: POST /v1/onramp/{currency_code}
+description: Collect fiat via mobile money and release stablecoins to an address.
+---
+
+Starts a local collection and, after success, releases crypto to the destination wallet.
+
+<ParamField path="currency_code" type="string" required>
+  e.g. `KES`, `UGX`, `GHS`, `MWK`, `CDF`.
+</ParamField>
+
+<ParamField body="shortcode" type="string" required>
+  Customer phone / mobile money number (10 digits for KES/UGX).
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Fiat amount to collect (currency-specific min/max).
+</ParamField>
+
+<ParamField body="mobile_network" type="string" required>
+  Network operator for the market (e.g. `Safaricom`, `Airtel`, `MTN`).
+</ParamField>
+
+<ParamField body="address" type="string" required>
+  Destination wallet address for released assets.
+</ParamField>
+
+<ParamField body="chain" type="string" required>
+  `BASE` or `CELO`.
+</ParamField>
+
+<ParamField body="asset" type="string" required>
+  `USDC` on BASE; `USDT` on CELO.
+</ParamField>
+
+<ParamField body="callback_url" type="string">
+  Optional webhook URL.
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Optional client reference.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/onramp/KES" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shortcode": "254712345678",
+    "amount": 500,
+    "mobile_network": "Safaricom",
+    "address": "0xYourWallet",
+    "chain": "BASE",
+    "asset": "USDC"
+  }'
+```
+</RequestExample>

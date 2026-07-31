@@ -1,0 +1,90 @@
+---
+title: Introduction
+description: Pretium — move value between stablecoins and African fiat rails.
+sidebarTitle: Introduction
+---
+
+<img
+  src="/images/landing.jpg"
+  alt="Pretium stablecoin and African payment rails"
+  className="landing-hero"
+/>
+
+Pretium (served at `{{base_url}}`) lets partners collect and disburse fiat across African markets, settle with stablecoins on-chain, and run hosted checkout. For AI assistants, add Pretium as an [MCP server](/guides/agents) in Cursor, Claude, or ChatGPT — no REST agent integration required.
+
+## Onboarding process
+
+To begin your onboarding journey, complete this quick [form](https://docs.google.com/forms/d/1MWxinUbcGBOYJxaEZMCYJCJhBxrlNozAWYvwctFJtHY/edit) to get started, or book a meeting [here](https://calendly.com/pretium-finance) with our team for a walkthrough or to address any questions you may have.
+
+Once we get your details, our onboarding specialists will guide you through **the setup, verification, and integration of your account and API**.
+
+Once onboarded, you'll receive your **API credentials** and **sandbox access** to test crypto transactions securely.
+
+## What you can build
+
+<CardGroup cols={2}>
+  <Card title="Offramp" icon="arrow-up-from-bracket" href="/guides/offramp">
+    Convert on-chain stablecoin payments into mobile money or bank payouts.
+  </Card>
+  <Card title="Onramp" icon="arrow-down-to-bracket" href="/guides/onramp">
+    Collect local fiat and settle stablecoins to a wallet address.
+  </Card>
+  <Card title="Checkout" icon="cart-shopping" href="/guides/checkout">
+    Hosted settlement flow with a checkout key and order lifecycle.
+  </Card>
+  <Card title="AI agents (MCP)" icon="robot" href="/guides/agents">
+    Add Pretium in Cursor, Claude, or ChatGPT and let agents pay via MCP tools.
+  </Card>
+</CardGroup>
+
+## Supported markets
+
+| Currency | Country | Prefix |
+|----------|---------|--------|
+| KES | Kenya | `/kes`, `/v1/.../KES` |
+| UGX | Uganda | `/ugx` |
+| NGN | Nigeria | `/ngn` |
+| GHS | Ghana | `/ghs` |
+| MWK | Malawi | `/mwk` |
+| CDF | DR Congo | `/cdf` |
+| ETB | Ethiopia | `/etb` |
+| TZS | Tanzania | `/tzs` |
+| ZMW | Zambia | `/zmw` |
+| RWF | Rwanda | `/rwf` (utilities) |
+
+## API surfaces
+
+| Surface | Base path | Auth header value |
+|---------|-----------|-------------------|
+| Unified payments | `/v1`, `/v2` | Partner `consumer_key` |
+| Account | `/account` | Partner `consumer_key` |
+| Collection & disbursement | `/{currency}` | Partner `consumer_key` |
+| Checkout | `/v1/checkout` | Partner `checkout_key` |
+| AI agents | [MCP guide](/guides/agents) | MCP server (`mcp.pretium.africa`), not REST |
+
+Almost all partner Pretium endpoints are **POST** with a JSON body.
+
+## Response envelope
+
+Successful and error responses share a consistent shape:
+
+```json
+{
+  "code": 200,
+  "message": "Exchange rates",
+  "data": {}
+}
+```
+
+Errors omit `data` and use `400`, `401`, `403`, or `404` in both the HTTP status and `code` field.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Make your first authenticated request in under five minutes.
+  </Card>
+  <Card title="Authentication" icon="lock" href="/authentication">
+    How API keys and checkout keys work for Pretium.
+  </Card>
+</CardGroup>

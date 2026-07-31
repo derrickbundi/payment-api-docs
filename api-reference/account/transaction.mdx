@@ -1,0 +1,22 @@
+---
+title: Get transaction
+api: POST /account/{country_code}/transaction
+description: Fetch one transaction by code under a country namespace.
+---
+
+<ParamField path="country_code" type="string" required>
+  e.g. `kes`, `ugx`, `ngn`, `zmw`, `mwk`, `cdf` (others fall back to KES store).
+</ParamField>
+
+<ParamField body="transaction_code" type="string" required>
+  Transaction code to look up.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/kes/transaction" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"transaction_code":"a1b2c3d4-e5f6-7890-abcd-ef1234567890"}'
+```
+</RequestExample>

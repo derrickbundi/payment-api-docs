@@ -1,0 +1,44 @@
+---
+title: Account detail
+api: POST /account/detail
+description: Partner profile, wallets, networks, and checkout key.
+---
+
+No body required.
+
+<ResponseField name="data.id" type="number">
+  Partner id.
+</ResponseField>
+
+<ResponseField name="data.name" type="string">
+  Partner name.
+</ResponseField>
+
+<ResponseField name="data.email" type="string">
+  Partner email.
+</ResponseField>
+
+<ResponseField name="data.status" type="string">
+  `ACTIVE` or `DEACTIVATED`.
+</ResponseField>
+
+<ResponseField name="data.checkout_key" type="string">
+  Key for `/v1/checkout` routes.
+</ResponseField>
+
+<ResponseField name="data.wallets" type="array">
+  Fiat account balances by country.
+</ResponseField>
+
+<ResponseField name="data.networks" type="array">
+  Supported settlement networks and assets.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/detail" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

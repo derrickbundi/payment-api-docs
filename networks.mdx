@@ -1,0 +1,74 @@
+---
+title: Networks
+description: Blockchain networks and stablecoin assets supported by Pretium.
+icon: "share-nodes"
+iconType: "solid"
+---
+
+Settle offramp, onramp, and checkout with these chains and assets. Availability can differ by product and partner account — confirm what is enabled for you before going live.
+
+<div className="network-grid">
+  <div className="network-card">
+    <div className="network-name">CELO</div>
+    <div className="network-assets">
+      <Badge color="green" size="sm" shape="pill">USDT</Badge>
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+  <div className="network-card">
+    <div className="network-name">BASE</div>
+    <div className="network-assets">
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+  <div className="network-card">
+    <div className="network-name">STELLAR</div>
+    <div className="network-assets">
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+  <div className="network-card">
+    <div className="network-name">SOLANA</div>
+    <div className="network-assets">
+      <Badge color="green" size="sm" shape="pill">USDT</Badge>
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+  <div className="network-card">
+    <div className="network-name">POLYGON</div>
+    <div className="network-assets">
+      <Badge color="green" size="sm" shape="pill">USDT</Badge>
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+  <div className="network-card">
+    <div className="network-name">ETHEREUM</div>
+    <div className="network-assets">
+      <Badge color="green" size="sm" shape="pill">USDT</Badge>
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+  <div className="network-card">
+    <div className="network-name">BNB (BSChain)</div>
+    <div className="network-assets">
+      <Badge color="green" size="sm" shape="pill">USDT</Badge>
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+  <div className="network-name">AVALANCHE</div>
+    <div className="network-assets">
+      <Badge color="green" size="sm" shape="pill">USDT</Badge>
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+  <div className="network-name">ARBITRUM</div>
+    <div className="network-assets">
+      <Badge color="green" size="sm" shape="pill">USDT</Badge>
+      <Badge color="blue" size="sm" shape="pill">USDC</Badge>
+    </div>
+  </div>
+</div>
+
+<Note>
+  Product surfaces (offramp, onramp, checkout, MCP) may expose a subset of this list. Use [`POST /account/networks`](/api-reference/account/networks) or the [partner portal](https://merchant.xwift.africa) for the networks enabled on your account. Checkout also has [`POST /v1/checkout/networks`](/api-reference/checkout/networks).
+</Note>

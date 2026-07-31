@@ -1,0 +1,61 @@
+---
+title: API overview
+description: Conventions shared across Pretium endpoints.
+---
+
+## Base URL
+
+Examples use `{{base_url}}` as the API host placeholder. The interactive playground is configured with the live Pretium API server.
+
+```
+{{base_url}}
+```
+
+## Authentication
+
+Send `x-api-key` on every request. See [Authentication](/authentication).
+
+## Content type
+
+```
+Content-Type: application/json
+```
+
+Checkout endpoints primarily accept **query parameters** even on `POST`.
+
+## Transaction object
+
+Status and list endpoints return resources similar to:
+
+```json
+{
+  "id": 1,
+  "transaction_code": "uuid-or-reference",
+  "status": "COMPLETE",
+  "amount": 1000,
+  "amount_in_usd": 7.5,
+  "type": "MOBILE",
+  "shortcode": "2547...",
+  "account_number": null,
+  "public_name": "JOHN DOE",
+  "receipt_number": "...",
+  "category": "DISBURSEMENT",
+  "chain": "CELO",
+  "asset": "USDT",
+  "transaction_hash": "0x...",
+  "message": "...",
+  "currency_code": "KES",
+  "is_released": false,
+  "created_at": "2026-07-31T10:00:00.000000Z"
+}
+```
+
+Country-specific resources may add `mobile_network`, bank fields, etc.
+
+## Statuses
+
+| Domain | Values |
+|--------|--------|
+| Transactions | `PENDING`, `COMPLETE`, `FAILED`, `REFUNDED` |
+| Checkout | `PENDING`, `EXPIRED`, `CANCELLED`, `FAILED`, `COMPLETE` |
+| MCP orders | `processing`, `pending`, `complete`, `failed`, `expired`, `refunded` |

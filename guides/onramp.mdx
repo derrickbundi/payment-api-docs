@@ -1,0 +1,52 @@
+---
+title: Onramp
+description: Collect local fiat and settle stablecoins to a wallet.
+icon: "arrow-down-to-bracket"
+iconType: "solid"
+---
+
+Onramp collects mobile money (or similar) from a customer, then releases crypto to an address you provide.
+
+## Flow
+
+1. Call [`POST /v1/onramp/{currency_code}`](/api-reference/payments/onramp) with phone/network, amount, destination `address`, `chain`, and `asset`.
+2. Customer completes the collection prompt (e.g. STK push).
+3. Poll status or wait for a webhook; when collection completes, assets are released on-chain.
+
+## Networks & assets
+
+| Chain | Asset |
+|-------|-------|
+| `BASE` | `USDC` |
+| `CELO` | `USDT` |
+
+Only `BASE` and `CELO` are accepted for onramp.
+
+## Amount limits
+
+| Currency | Min | Max | Networks |
+|----------|-----|-----|----------|
+| KES (default) | 100 | 250,000 | Safaricom, Airtel |
+| UGX | 500 | 5,000,000 | Airtel, MTN |
+| GHS | 10 | 5,000 | AirtelTigo, MTN, Telecel |
+| MWK | 2,000 | 5,000,000 | Airtel, TNM |
+| CDF | 2,800 | 280,000 | Airtel Money, Mpesa |
+
+## Example (KES)
+
+```bash
+curl -X POST "{{base_url}}/v1/onramp/KES" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shortcode": "254712345678",
+    "amount": 500,
+    "mobile_network": "Safaricom",
+    "address": "0xYourWallet",
+    "chain": "BASE",
+    "asset": "USDC",
+    "callback_url": "https://example.com/hooks/pretium"
+  }'
+```
+
+Check [`POST /v2/exchange-rate`](/api-reference/rates/exchange-rate-v2) for `is_onramp_active` before starting collections.

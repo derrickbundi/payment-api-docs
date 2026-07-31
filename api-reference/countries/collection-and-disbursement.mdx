@@ -1,0 +1,401 @@
+---
+title: Collection & disbursement
+description: Wallet-funded collect and disburse under a currency prefix — same shape as offramp/onramp without transaction_hash.
+---
+
+Collection and disbursement work the same way as off-ramp and on-ramp transactions. They use the same request body structure, except `transaction_hash` and `chain` are **not** included. See [Offramp](/guides/offramp) and [Onramp](/guides/onramp) for crypto settlement flows.
+
+Base URL: `{{base_url}}` · Auth: consumer `x-api-key`
+
+Replace `{currency_code}` with a market prefix such as `kes`, `ugx`, `ngn`, `ghs`, `mwk`, `cdf`, or `etb`.
+
+---
+
+## Disbursement
+
+Calls Pretium to release fiat from your partner wallet to the recipient (mobile money, paybill, till, etc.).
+
+```
+POST /{currency_code}/disburse
+```
+
+<ParamField body="type" type="string" required>
+  `MOBILE`, `BUY_GOODS`, or `PAYBILL`
+</ParamField>
+
+<ParamField body="shortcode" type="string" required>
+  Recipient mobile, till, or paybill number
+</ParamField>
+
+<ParamField body="account_number" type="string">
+  Required if `type` is `PAYBILL`
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Amount to disburse
+</ParamField>
+
+<ParamField body="mobile_network" type="string">
+  e.g. `Safaricom` — required when `type` is `MOBILE`
+</ParamField>
+
+<ParamField body="callback_url" type="string">
+  Optional URL for payment notification
+</ParamField>
+
+<ParamField body="fee" type="number">
+  Optional partner fee — see [Fee](/fee)
+</ParamField>
+
+<CodeGroup>
+```json Request body
+{
+  "shortcode": "0700123456",
+  "amount": 50,
+  "type": "MOBILE",
+  "mobile_network": "Safaricom",
+  "callback_url": "https://example.com/hooks/pretium"
+}
+```
+
+```json 200 Success
+{
+  "code": 200,
+  "message": "Message",
+  "data": {
+    "status": "PENDING",
+    "transaction_code": "DDM6D",
+    "message": "Success! Processing payment..."
+  }
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</CodeGroup>
+
+```bash
+curl -X POST "{{base_url}}/kes/disburse" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shortcode": "0700123456",
+    "amount": 50,
+    "type": "MOBILE",
+    "mobile_network": "Safaricom"
+  }'
+```
+
+---
+
+## Collection
+
+Initiates cash collection from the user (mobile money prompt / similar).
+
+```
+POST /{currency_code}/collect
+```
+
+<ParamField body="shortcode" type="string" required>
+  Customer mobile number
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Amount to collect
+</ParamField>
+
+<ParamField body="mobile_network" type="string" required>
+  e.g. `Safaricom`, `Airtel`
+</ParamField>
+
+<ParamField body="callback_url" type="string">
+  Optional notification URL
+</ParamField>
+
+<ParamField body="fee" type="number">
+  Optional partner fee — see [Fee](/fee)
+</ParamField>
+
+<CodeGroup>
+```json Request body
+{
+  "shortcode": "0743312265",
+  "amount": 20,
+  "mobile_network": "Safaricom",
+  "callback_url": "https://example.com/hooks/pretium"
+}
+```
+
+```json 200 Success
+{
+  "code": 200,
+  "message": "Disburse initiated",
+  "data": {
+    "status": "PENDING",
+    "transaction_code": "TSALX",
+    "message": "Success! Processing payment."
+  }
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</CodeGroup>
+
+---
+
+## Supported banks
+
+List banks supported for the currency.
+
+```
+POST /{currency_code}/banks
+```
+
+<CodeGroup>
+```json 200 Success
+{
+  "code": 200,
+  "message": "List of banks",
+  "data": [
+    {
+      "Code": "247247",
+      "Name": "Equity Bank"
+    }
+  ]
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</CodeGroup>
+
+---
+
+## Bank info
+
+Resolves a bank account number and returns the registered account name. Available for **`kes`** and **`ngn`**.
+
+```
+POST /{currency_code}/bank-infor
+```
+
+<ParamField body="account_number" type="string" required>
+  Bank account number to look up
+</ParamField>
+
+<ParamField body="bank_code" type="string" required>
+  Bank code from [`POST /{currency_code}/banks`](#supported-banks)
+</ParamField>
+
+<CodeGroup>
+```json Request body
+{
+  "account_number": "001918181",
+  "bank_code": "247247"
+}
+```
+
+```json 200 Success
+{
+  "code": 200,
+  "message": "Bank Information",
+  "data": {
+    "account_name": "JOHN DOE",
+    "account_number": "001918181",
+    "bank_name": "Equity Bank",
+    "bank_code": "247247"
+  }
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</CodeGroup>
+
+```bash
+curl -X POST "{{base_url}}/kes/bank-infor" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "account_number": "001918181",
+    "bank_code": "247247"
+  }'
+```
+
+---
+
+## Bank transfer
+
+Settle a disbursement to a recipient bank account (wallet-funded).
+
+```
+POST /{currency_code}/bank-transfer
+```
+
+<ParamField body="amount" type="number" required>
+  Amount to transfer
+</ParamField>
+
+<ParamField body="account_number" type="string" required>
+  Recipient bank account number
+</ParamField>
+
+<ParamField body="bank_code" type="string" required>
+  Bank code from the banks list
+</ParamField>
+
+<CodeGroup>
+```json Request body
+{
+  "amount": 500,
+  "account_number": "001918181",
+  "bank_code": "247247"
+}
+```
+
+```json 200 Success
+{
+  "code": 200,
+  "message": "Message",
+  "data": {
+    "status": "PENDING",
+    "transaction_code": "DDM6D",
+    "message": "Success! Processing payment..."
+  }
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</CodeGroup>
+
+---
+
+## Validation
+
+Validates a phone number / shortcode and returns the registered public name from the MNO where available.
+
+Reliability varies by country — avoid heavy dependence on this endpoint alone.
+
+```
+POST /{currency_code}/validation
+```
+
+<ParamField body="shortcode" type="string" required>
+  Phone or shortcode to validate
+</ParamField>
+
+<ParamField body="type" type="string" required>
+  e.g. `MOBILE`
+</ParamField>
+
+<ParamField body="network" type="string">
+  e.g. `Safaricom`
+</ParamField>
+
+<CodeGroup>
+```json Request body
+{
+  "shortcode": "0700123456",
+  "type": "MOBILE",
+  "network": "Safaricom"
+}
+```
+
+```json 200 Success
+{
+  "code": 200,
+  "message": "Validation results",
+  "data": {
+    "status": "COMPLETE",
+    "shortcode": "0700123456",
+    "public_name": "JOHN DOE"
+  }
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</CodeGroup>
+
+---
+
+## Status
+
+Fetch a transaction by `transaction_code`.
+
+```
+POST /{currency_code}/status
+```
+
+<ParamField body="transaction_code" type="string" required>
+  Transaction reference returned from disburse, collect, or bank transfer
+</ParamField>
+
+<CodeGroup>
+```json Request body
+{
+  "transaction_code": "fg464gggshshkkk"
+}
+```
+
+```json 200 Success
+{
+  "code": 200,
+  "message": "Transaction",
+  "data": {
+    "id": 51215,
+    "transaction_code": "045c1753-4e5b-4fa8-997b-ee52b78a96fa",
+    "status": "COMPLETE",
+    "amount": "20",
+    "type": "MOBILE",
+    "shortcode": "0700123456",
+    "account_number": null,
+    "public_name": "JOHN DOE",
+    "receipt_number": "TIMCW5AK69",
+    "category": "DISBURSEMENT",
+    "message": "Transaction processed successfully.",
+    "currency_code": "KES",
+    "created_at": "2025-09-22T08:08:18.000000Z"
+  }
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</CodeGroup>
+
+---
+
+## Currency codes
+
+Use the lowercase currency prefix as `{currency_code}`, for example `kes`, `ugx`, `ngn`, `ghs`, `mwk`, `cdf`, `etb`, `tzs`, or `zmw`. Endpoint availability and amount limits differ by market.

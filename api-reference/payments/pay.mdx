@@ -1,0 +1,103 @@
+---
+title: Pay (offramp)
+api: POST /v1/pay/{currency_code}
+description: Verify an on-chain transfer and disburse local fiat.
+---
+
+Offramp endpoint. Provide a `transaction_hash` for a confirmed stablecoin transfer, plus destination details for the target currency.
+
+<ParamField path="currency_code" type="string">
+  Destination currency. Defaults to Kenya rules when omitted.
+</ParamField>
+
+## Common fields
+
+<ParamField body="transaction_hash" type="string" required>
+  On-chain transaction hash. Must not have been processed before.
+</ParamField>
+
+<ParamField body="chain" type="string">
+  `BASE`, `CELO` (default), `STELLAR`, `POLYGON`, `SOLANA`, `ETHEREUM`, or `BNB`.
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Fiat amount to disburse (limits depend on currency).
+</ParamField>
+
+<ParamField body="callback_url" type="string">
+  Optional webhook URL for this transaction.
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Optional client reference; a UUID is generated if omitted.
+</ParamField>
+
+## Currency-specific fields
+
+### KES
+
+| Field | Rules |
+|-------|-------|
+| `type` | `MOBILE`, `PAYBILL`, `BUY_GOODS`, `BANK_TRANSFER` |
+| `shortcode` | Required for mobile / paybill / buy goods |
+| `account_number` | Required for paybill / bank transfer |
+| `mobile_network` | `Safaricom` or `Airtel` when `type=MOBILE` |
+| `amount` | 20 – 250,000 |
+
+### UGX
+
+| Field | Rules |
+|-------|-------|
+| `shortcode` | 10 digits |
+| `mobile_network` | `Airtel` or `MTN` |
+| `amount` | 500 – 5,000,000 |
+
+### NGN
+
+| Field | Rules |
+|-------|-------|
+| `account_name`, `account_number`, `bank_name`, `bank_code` | Required |
+| `amount` | 100 – 1,000,000 |
+
+### GHS
+
+| Field | Rules |
+|-------|-------|
+| `shortcode` | Required |
+| `mobile_network` | `AirtelTigo`, `MTN`, `Telecel` |
+| `amount` | 5 – 1,000 |
+
+### MWK
+
+| Field | Rules |
+|-------|-------|
+| `type` | `MOBILE` or `BANK_TRANSFER` |
+| `shortcode` | Phone number for `MOBILE` |
+| `mobile_network` | `Airtel Money` or `TNM Mpamba` when `type=MOBILE` |
+| `account_name`, `account_number`, `bank_name`, `bank_code` | For `BANK_TRANSFER` |
+| `amount` | 100 – 5,000,000 |
+
+### CDF
+
+| Field | Rules |
+|-------|-------|
+| `shortcode` | Required |
+| `mobile_network` | `Airtel Money` or `Mpesa` |
+| `amount` | 2,800 – 280,000 |
+| `currency` | Optional: `CDF` (default) or `USD` |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/pay/KES" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "transaction_hash": "0xabc123",
+    "chain": "CELO",
+    "type": "MOBILE",
+    "shortcode": "254712345678",
+    "amount": 1000,
+    "mobile_network": "Safaricom"
+  }'
+```
+</RequestExample>

@@ -1,0 +1,26 @@
+---
+title: List account transactions
+api: POST /account/{country_code}/transactions
+description: List transactions for a country with optional date filters.
+---
+
+<ParamField path="country_code" type="string" required>
+  Country code segment, e.g. `kes`.
+</ParamField>
+
+<ParamField body="start_date" type="string">
+  Optional start date.
+</ParamField>
+
+<ParamField body="end_date" type="string">
+  Optional end date.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/kes/transactions" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

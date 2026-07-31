@@ -1,0 +1,54 @@
+---
+title: Collection & disbursements
+description: Wallet-funded collection and disbursement under currency prefixes.
+icon: "globe"
+iconType: "solid"
+---
+
+Collection and disbursement APIs move fiat from your Pretium wallet balance — **without** an on-chain `transaction_hash`.
+
+They share the same body shape as offramp / onramp, except `transaction_hash` and `chain` are omitted.
+
+## Core endpoints
+
+| Action | Method | Path |
+|--------|--------|------|
+| Disburse | `POST` | `/{currency_code}/disburse` |
+| Collect | `POST` | `/{currency_code}/collect` |
+| Banks | `POST` | `/{currency_code}/banks` |
+| Bank transfer | `POST` | `/{currency_code}/bank-transfer` |
+| Validation | `POST` | `/{currency_code}/validation` |
+| Status | `POST` | `/{currency_code}/status` |
+
+Full request and response examples: **[Collection & disbursement](/api-reference/countries/collection-and-disbursement)**.
+
+## Auth
+
+`x-api-key` = partner consumer key.
+
+## Currency prefixes
+
+| Prefix | Market |
+|--------|--------|
+| `/kes` | Kenya |
+| `/ugx` | Uganda |
+| `/ngn` | Nigeria |
+| `/ghs` | Ghana |
+| `/mwk` | Malawi |
+| `/cdf` | DR Congo |
+| `/etb` | Ethiopia |
+| `/tzs` | Tanzania |
+| `/zmw` | Zambia |
+| `/rwf` | Rwanda (utilities) |
+
+## When to use `/v1` instead
+
+| Use `/v1` pay / onramp | Use `/{currency_code}` collection & disbursement |
+|------------------------|--------------------------------------------------|
+| Settling with on-chain hashes | Wallet-funded local rails |
+| Crypto → fiat or fiat → crypto | Fiat in / out only |
+| Single cross-market product surface | Market-specific collect / disburse |
+
+## Payment locks
+
+Collections and disbursements can be temporarily locked per country (`400` with a maintenance-style message). Check [`POST /v2/exchange-rate`](/api-reference/rates/exchange-rate-v2) for ramp flags on the unified API.

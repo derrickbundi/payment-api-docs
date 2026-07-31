@@ -1,0 +1,28 @@
+---
+title: List transactions
+api: POST /v1/transactions/{currency_code}
+description: List recent transactions for a currency (optional date window).
+---
+
+When `start_date` / `end_date` are provided, results are limited to a **3-day** window. No pagination — the full matching set is returned.
+
+<ParamField path="currency_code" type="string" required>
+  Currency code, e.g. `KES`.
+</ParamField>
+
+<ParamField body="start_date" type="string">
+  Optional start date (`YYYY-MM-DD`).
+</ParamField>
+
+<ParamField body="end_date" type="string">
+  Optional end date (`YYYY-MM-DD`).
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/v1/transactions/KES" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"start_date":"2026-07-28","end_date":"2026-07-30"}'
+```
+</RequestExample>

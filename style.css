@@ -1,0 +1,88 @@
+/* Homepage: hide group + page title so the landing image sits at the top */
+html[data-current-path="/"] #header {
+  display: none;
+}
+
+html[data-current-path="/"] #content-area {
+  padding-top: 0;
+}
+
+html[data-current-path="/"] #content > :first-child {
+  margin-top: 0;
+}
+
+html[data-current-path="/"] .landing-hero {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  margin: 0 0 1.5rem;
+}
+
+/* Networks page */
+.network-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.875rem;
+  margin: 1.5rem 0 1.75rem;
+}
+
+@media (max-width: 900px) {
+  .network-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .network-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.network-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--primary, #0b6e4f) 18%, transparent);
+  border-radius: 12px;
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--primary, #0b6e4f) 8%, transparent) 0%,
+      transparent 55%
+    ),
+    color-mix(in srgb, var(--primary, #0b6e4f) 3%, transparent);
+}
+
+.network-name {
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.network-subtitle {
+  margin: -0.35rem 0 0;
+  font-size: 0.78rem;
+  opacity: 0.65;
+  line-height: 1.3;
+}
+
+.network-assets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+}
+
+.dark .network-card {
+  border-color: color-mix(in srgb, var(--primary, #12a974) 28%, transparent);
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--primary, #12a974) 14%, transparent) 0%,
+      transparent 55%
+    ),
+    color-mix(in srgb, #fff 3%, transparent);
+}
