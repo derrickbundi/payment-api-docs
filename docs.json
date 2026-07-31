@@ -133,12 +133,11 @@
     }
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Partner portal",
-        "href": "https://merchant.xwift.africa"
-      }
-    ]
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://merchant.xwift.africa"
+    }
   },
   "footer": {
     "socials": {}
