@@ -140,7 +140,10 @@
     }
   },
   "footer": {
-    "socials": {}
+    "socials": {
+      "x": "https://x.com/PretiumApp",
+      "linkedin": "https://www.linkedin.com/company/pretium-finance/"
+    }
   },
   "redirects": [
     {
