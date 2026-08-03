@@ -1,6 +1,6 @@
 ---
 title: Offramp
-description: Convert on-chain stablecoin deposits into local fiat payouts.
+description: Convert on-chain stablecoin deposits into local fiat payouts. Amount limits are per transaction.
 icon: "arrow-up-from-bracket"
 iconType: "solid"
 ---
@@ -40,15 +40,7 @@ sequenceDiagram
 
 ## Amount limits (pay)
 
-| Currency | Min | Max | Notes |
-|----------|-----|-----|-------|
-| KES | 20 | 250,000 | `MOBILE`, `PAYBILL`, `BUY_GOODS`, `BANK_TRANSFER` |
-| UGX | 500 | 5,000,000 | 10-digit `shortcode`, MTN / Airtel |
-| NGN | 100 | 1,000,000 | Bank account fields required |
-| GHS | 5 | 1,000 | MTN / AirtelTigo / Telecel |
-| ETB | 5 | 5,000 | Telebirr / Cbe Birr / MPESA |
-| MWK | 100 | 5,000,000 | Mobile or bank transfer |
-| CDF | 2,800 | 280,000 | Optional `currency` CDF/USD |
+Per-transaction min/max by currency and mobile money network: [Limits](/limits).
 
 ## Example (KES mobile)
 

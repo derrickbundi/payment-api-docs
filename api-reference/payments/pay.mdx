@@ -1,7 +1,7 @@
 ---
 title: Pay (offramp)
 api: POST /v1/pay/{currency_code}
-description: Verify an on-chain transfer and disburse local fiat.
+description: Verify an on-chain transfer and disburse local fiat. Amount limits are per transaction.
 ---
 
 Offramp endpoint. Provide a `transaction_hash` for a confirmed stablecoin transfer, plus destination details for the target currency.
@@ -21,7 +21,7 @@ Offramp endpoint. Provide a `transaction_hash` for a confirmed stablecoin transf
 </ParamField>
 
 <ParamField body="amount" type="number" required>
-  Fiat amount to disburse (limits depend on currency).
+  Fiat amount to disburse. Limits are per transaction — see [Limits](/limits).
 </ParamField>
 
 <ParamField body="callback_url" type="string">
@@ -42,7 +42,7 @@ Offramp endpoint. Provide a `transaction_hash` for a confirmed stablecoin transf
 | `shortcode` | Required for mobile / paybill / buy goods |
 | `account_number` | Required for paybill / bank transfer |
 | `mobile_network` | `Safaricom` or `Airtel` when `type=MOBILE` |
-| `amount` | 20 – 250,000 |
+| `amount` | See [Limits](/limits) |
 
 ### UGX
 
@@ -50,14 +50,14 @@ Offramp endpoint. Provide a `transaction_hash` for a confirmed stablecoin transf
 |-------|-------|
 | `shortcode` | 10 digits |
 | `mobile_network` | `Airtel` or `MTN` |
-| `amount` | 500 – 5,000,000 |
+| `amount` | See [Limits](/limits) |
 
 ### NGN
 
 | Field | Rules |
 |-------|-------|
 | `account_name`, `account_number`, `bank_name`, `bank_code` | Required |
-| `amount` | 100 – 1,000,000 |
+| `amount` | See [Limits](/limits) |
 
 ### GHS
 
@@ -65,7 +65,7 @@ Offramp endpoint. Provide a `transaction_hash` for a confirmed stablecoin transf
 |-------|-------|
 | `shortcode` | Required |
 | `mobile_network` | `AirtelTigo`, `MTN`, `Telecel` |
-| `amount` | 5 – 1,000 |
+| `amount` | See [Limits](/limits) |
 
 ### MWK
 
@@ -75,7 +75,7 @@ Offramp endpoint. Provide a `transaction_hash` for a confirmed stablecoin transf
 | `shortcode` | Phone number for `MOBILE` |
 | `mobile_network` | `Airtel Money` or `TNM Mpamba` when `type=MOBILE` |
 | `account_name`, `account_number`, `bank_name`, `bank_code` | For `BANK_TRANSFER` |
-| `amount` | 100 – 5,000,000 |
+| `amount` | See [Limits](/limits) |
 
 ### CDF
 
@@ -83,8 +83,16 @@ Offramp endpoint. Provide a `transaction_hash` for a confirmed stablecoin transf
 |-------|-------|
 | `shortcode` | Required |
 | `mobile_network` | `Airtel Money` or `Mpesa` |
-| `amount` | 2,800 – 280,000 |
+| `amount` | See [Limits](/limits) |
 | `currency` | Optional: `CDF` (default) or `USD` |
+
+### ETB
+
+| Field | Rules |
+|-------|-------|
+| `shortcode` | Required |
+| `mobile_network` | `Telebirr`, `Cbe Birr`, or `MPESA` |
+| `amount` | See [Limits](/limits) |
 
 <RequestExample>
 ```bash

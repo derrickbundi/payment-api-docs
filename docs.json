@@ -37,6 +37,7 @@
               "webhooks",
               "networks",
               "mnos",
+              "limits",
               "fee"
             ]
           },

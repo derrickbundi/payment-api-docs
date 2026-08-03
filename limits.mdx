@@ -1,0 +1,57 @@
+---
+title: Limits
+description: Per-transaction amount limits by country and mobile money for pay (offramp) and onramp.
+icon: "gauge-high"
+iconType: "solid"
+---
+
+Amount limits for the unified `/v1` pay (offramp) and onramp APIs. All values are **per transaction**, in local fiat currency.
+
+Limits apply at the country/currency level — every mobile money operator in that market shares the same min and max. See [MNOs](/mnos) for supported networks by country.
+
+## Kenya (KES)
+
+| Flow | Min | Max | Networks |
+|------|-----|-----|----------|
+| Pay (offramp) | 20 | 250,000 | Safaricom, Airtel |
+| Onramp | 100 | 250,000 | Safaricom, Airtel |
+
+## Uganda (UGX)
+
+| Flow | Min | Max | Networks |
+|------|-----|-----|----------|
+| Pay (offramp) | 500 | 5,000,000 | MTN, Airtel |
+| Onramp | 500 | 5,000,000 | MTN, Airtel |
+
+## Ghana (GHS)
+
+| Flow | Min | Max | Networks |
+|------|-----|-----|----------|
+| Pay (offramp) | 5 | 1,000 | MTN, AirtelTigo, Telecel |
+| Onramp | 10 | 5,000 | MTN, AirtelTigo, Telecel |
+
+## Malawi (MWK)
+
+| Flow | Min | Max | Networks |
+|------|-----|-----|----------|
+| Pay (offramp) | 100 | 5,000,000 | Airtel Money, TNM Mpamba |
+| Onramp | 2,000 | 5,000,000 | Airtel, TNM Mpamba |
+
+## DR Congo (CDF)
+
+| Flow | Min | Max | Networks |
+|------|-----|-----|----------|
+| Pay (offramp) | 2,800 | 280,000 | Airtel Money, Mpesa |
+| Onramp | 2,800 | 280,000 | Airtel Money, Mpesa |
+
+## Ethiopia (ETB)
+
+| Flow | Min | Max | Networks |
+|------|-----|-----|----------|
+| Pay (offramp) | 5 | 5,000 | Telebirr, Cbe Birr, MPESA |
+
+## Nigeria (NGN)
+
+| Flow | Min | Max | Networks |
+|------|-----|-----|----------|
+| Pay (offramp) | 100 | 1,000,000 | All banks |

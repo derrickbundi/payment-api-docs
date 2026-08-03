@@ -1,7 +1,7 @@
 ---
 title: Onramp
 api: POST /v1/onramp/{currency_code}
-description: Collect fiat via mobile money and release stablecoins to an address.
+description: Collect fiat via mobile money and release stablecoins to an address. Amount limits are per transaction.
 ---
 
 Starts a local collection and, after success, releases crypto to the destination wallet.
@@ -15,7 +15,7 @@ Starts a local collection and, after success, releases crypto to the destination
 </ParamField>
 
 <ParamField body="amount" type="number" required>
-  Fiat amount to collect (currency-specific min/max).
+  Fiat amount to collect. Limits are per transaction — see [Limits](/limits).
 </ParamField>
 
 <ParamField body="mobile_network" type="string" required>
@@ -41,6 +41,10 @@ Starts a local collection and, after success, releases crypto to the destination
 <ParamField body="reference" type="string">
   Optional client reference.
 </ParamField>
+
+## Amount limits
+
+Per-transaction min/max by currency: [Limits](/limits).
 
 <RequestExample>
 ```bash
