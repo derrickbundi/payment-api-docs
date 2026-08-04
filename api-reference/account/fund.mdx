@@ -1,0 +1,74 @@
+---
+title: Fund wallet
+api: POST /account/fund
+description: Get FX rate and settlement wallets for topping up a fiat wallet with crypto.
+---
+
+First step of wallet funding. Returns the current FX rate and Pretium settlement addresses per network. Send stablecoin to one of those addresses, then call [Fund confirm](/api-reference/account/fund-confirm).
+
+<ParamField body="currency_code" type="string" required>
+  Fiat wallet currency such as `KES` or `UGX` (case-insensitive).
+</ParamField>
+
+<ResponseField name="data.currency_code" type="string">
+  Currency code of the wallet being funded.
+</ResponseField>
+
+<ResponseField name="data.selling_rate" type="number">
+  Current FX rate for the market. Confirm credits use the rate at confirmation time.
+</ResponseField>
+
+<ResponseField name="data.networks" type="array">
+  Settlement options. Each item has `network`, `settlement_wallet_address`, and `assets`.
+</ResponseField>
+
+### Supported networks & assets
+
+| Network | Assets |
+|---------|--------|
+| `BASE` | `USDC` |
+| `ETHEREUM` | `USDT`, `USDC` |
+| `SOLANA` | `USDT`, `USDC` |
+| `CELO` | `USDT`, `USDC` |
+
+### Errors
+
+| Status | Message | When |
+|--------|---------|------|
+| `400` | Validation message | Missing `currency_code` |
+| `400` | `Country not supported.` | Unknown currency |
+| `404` | `Wallet not found!` | No partner wallet for that currency |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/fund" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"currency_code":"KES"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Fund wallet details",
+  "data": {
+    "currency_code": "KES",
+    "selling_rate": 131.2,
+    "networks": [
+      {
+        "network": "BASE",
+        "settlement_wallet_address": "0x...",
+        "assets": ["USDC"]
+      },
+      {
+        "network": "CELO",
+        "settlement_wallet_address": "0x...",
+        "assets": ["USDT", "USDC"]
+      }
+    ]
+  }
+}
+```
+</ResponseExample>

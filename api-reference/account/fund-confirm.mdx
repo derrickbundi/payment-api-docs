@@ -1,0 +1,108 @@
+---
+title: Fund confirm
+api: POST /account/fund/confirm
+description: Verify an on-chain deposit and credit the partner fiat wallet.
+---
+
+Second step of wallet funding. After transferring USDC or USDT to a settlement address from [Fund wallet](/api-reference/account/fund), submit the transaction hash. Pretium verifies the transfer on-chain, converts at the current FX rate, and credits your fiat balance.
+
+Amount and asset are read from the chain — do not send them in the body.
+
+<ParamField body="currency_code" type="string" required>
+  Fiat wallet currency such as `KES` or `UGX` (case-insensitive).
+</ParamField>
+
+<ParamField body="network" type="string" required>
+  Chain of the deposit: `BASE`, `CELO`, `SOLANA` (`sol`), or `ETHEREUM` (`eth`). Case-insensitive.
+</ParamField>
+
+<ParamField body="transaction_hash" type="string" required>
+  On-chain transaction hash. Must not have been processed before.
+</ParamField>
+
+<ResponseField name="data.currency_code" type="string">
+  Credited wallet currency.
+</ResponseField>
+
+<ResponseField name="data.amount" type="number">
+  Fiat amount credited (`amount_in_usd × rate`).
+</ResponseField>
+
+<ResponseField name="data.amount_in_usd" type="number">
+  Stablecoin amount detected on-chain.
+</ResponseField>
+
+<ResponseField name="data.buying_rate" type="number">
+  FX rate used for the conversion.
+</ResponseField>
+
+<ResponseField name="data.asset" type="string">
+  Token received (`USDC` or `USDT`).
+</ResponseField>
+
+<ResponseField name="data.network" type="string">
+  Normalized chain name.
+</ResponseField>
+
+<ResponseField name="data.transaction_hash" type="string">
+  Confirmed transaction hash.
+</ResponseField>
+
+<ResponseField name="data.balance" type="number">
+  Fiat wallet balance after the credit.
+</ResponseField>
+
+### Supported networks & assets
+
+| Network | Assets |
+|---------|--------|
+| `BASE` | `USDC` |
+| `ETHEREUM` | `USDT`, `USDC` |
+| `SOLANA` | `USDT`, `USDC` |
+| `CELO` | `USDT`, `USDC` |
+
+### Errors
+
+| Status | Message | When |
+|--------|---------|------|
+| `400` | Validation message | Missing required fields |
+| `400` | `Country not supported.` | Unknown currency |
+| `400` | `Unsupported network. Allowed networks: Base, Celo, Solana, Ethereum` | Invalid network |
+| `400` | `Settlement wallet not configured for this network.` | No funding wallet for chain |
+| `400` | `This transaction hash has already been processed.` | Hash already used |
+| `400` | `Transaction not complete on-chain. Try again.` | On-chain status is not success |
+| `400` | `This transaction was not done to Pretium wallet address.` | Transfer not to settlement wallet |
+| `400` | `{CHAIN} {TOKEN} token not supported at the moment.` | Unsupported asset on that chain |
+| `400` | `Wallet not found!` | No partner wallet for that currency |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/fund/confirm" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "currency_code": "KES",
+    "network": "BASE",
+    "transaction_hash": "0xabc123..."
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "FIAT wallet credited successfully.",
+  "data": {
+    "currency_code": "KES",
+    "amount": 12950.0,
+    "amount_in_usd": 100.0,
+    "buying_rate": 129.5,
+    "asset": "USDC",
+    "network": "BASE",
+    "transaction_hash": "0xabc123...",
+    "balance": 50000.0
+  }
+}
+```
+</ResponseExample>

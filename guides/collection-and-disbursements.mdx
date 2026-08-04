@@ -9,6 +9,8 @@ Collection and disbursement APIs move fiat from your Pretium wallet balance — 
 
 They share the same body shape as offramp / onramp, except `transaction_hash` and `chain` are omitted.
 
+Top up that balance with crypto via [`POST /account/fund`](/api-reference/account/fund) then [`POST /account/fund/confirm`](/api-reference/account/fund-confirm).
+
 ## Core endpoints
 
 | Action | Method | Path |

@@ -88,6 +88,8 @@
             "pages": [
               "api-reference/account/detail",
               "api-reference/account/wallet",
+              "api-reference/account/fund",
+              "api-reference/account/fund-confirm",
               "api-reference/account/countries",
               "api-reference/account/networks",
               "api-reference/account/transaction",
