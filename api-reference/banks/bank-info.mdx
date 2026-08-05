@@ -1,0 +1,53 @@
+---
+title: Bank info
+api: POST /{currency_code}/bank-infor
+description: Resolve a bank account number to the registered account name.
+---
+
+Resolves a bank account and returns the registered account name. Available for **`kes`** and **`ngn`**.
+
+<ParamField path="currency_code" type="string" required>
+  Lowercase market prefix, e.g. `kes`.
+</ParamField>
+
+<ParamField body="account_number" type="string" required>
+  Bank account number to look up.
+</ParamField>
+
+<ParamField body="bank_code" type="string" required>
+  Bank code from [List banks](/api-reference/banks/banks).
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/kes/bank-infor" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "account_number": "001918181",
+    "bank_code": "247247"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 Success
+{
+  "code": 200,
+  "message": "Bank Information",
+  "data": {
+    "account_name": "JOHN DOE",
+    "account_number": "001918181",
+    "bank_name": "Equity Bank",
+    "bank_code": "247247"
+  }
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</ResponseExample>

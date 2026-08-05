@@ -65,6 +65,20 @@
             ]
           },
           {
+            "group": "Account",
+            "pages": [
+              "api-reference/account/detail",
+              "api-reference/account/wallet",
+              "api-reference/account/fund",
+              "api-reference/account/fund-confirm",
+              "api-reference/account/countries",
+              "api-reference/account/networks",
+              "api-reference/account/transaction",
+              "api-reference/account/transactions",
+              "api-reference/account/exchange-rate"
+            ]
+          },
+          {
             "group": "Rates",
             "pages": [
               "api-reference/rates/exchange-rate",
@@ -84,17 +98,11 @@
             ]
           },
           {
-            "group": "Account",
+            "group": "Banks",
             "pages": [
-              "api-reference/account/detail",
-              "api-reference/account/wallet",
-              "api-reference/account/fund",
-              "api-reference/account/fund-confirm",
-              "api-reference/account/countries",
-              "api-reference/account/networks",
-              "api-reference/account/transaction",
-              "api-reference/account/transactions",
-              "api-reference/account/exchange-rate"
+              "api-reference/banks/banks",
+              "api-reference/banks/bank-info",
+              "api-reference/banks/bank-transfer"
             ]
           },
           {

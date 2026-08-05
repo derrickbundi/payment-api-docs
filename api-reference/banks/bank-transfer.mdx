@@ -1,0 +1,66 @@
+---
+title: Bank transfer
+api: POST /{currency_code}/bank-transfer
+description: Settle a wallet-funded disbursement to a recipient bank account.
+---
+
+Settles a disbursement to a recipient bank account from your Pretium wallet balance. Track it afterwards with [`POST /{currency_code}/status`](/api-reference/countries/collection-and-disbursement#status) using the returned `transaction_code`.
+
+<ParamField path="currency_code" type="string" required>
+  Lowercase market prefix, e.g. `kes`.
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Amount to transfer. For `kes` the allowed range is **100 – 250,000**.
+</ParamField>
+
+<ParamField body="account_number" type="string" required>
+  Recipient bank account number.
+</ParamField>
+
+<ParamField body="bank_code" type="string" required>
+  Bank code from [List banks](/api-reference/banks/banks).
+</ParamField>
+
+<ParamField body="callback_url" type="string">
+  Optional URL for payment notification.
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Optional unique reference used as the `transaction_code`. Auto-generated if omitted.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/kes/bank-transfer" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 500,
+    "account_number": "001918181",
+    "bank_code": "247247",
+    "callback_url": "https://example.com/hooks/pretium"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 Success
+{
+  "code": 200,
+  "message": "Message",
+  "data": {
+    "status": "PENDING",
+    "transaction_code": "045c1753-4e5b-4fa8-997b-ee52b78a96fa",
+    "message": "Success! Processing payment..."
+  }
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</ResponseExample>

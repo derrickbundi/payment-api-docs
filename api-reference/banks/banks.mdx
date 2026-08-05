@@ -1,0 +1,40 @@
+---
+title: List banks
+api: POST /{currency_code}/banks
+description: List banks supported for a currency.
+---
+
+<ParamField path="currency_code" type="string" required>
+  Lowercase market prefix, e.g. `kes`.
+</ParamField>
+
+No request body is required. Use the returned `Code` as `bank_code` in [Bank info](/api-reference/banks/bank-info) and [Bank transfer](/api-reference/banks/bank-transfer) requests.
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/kes/banks" \
+  -H "x-api-key: YOUR_CONSUMER_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 Success
+{
+  "code": 200,
+  "message": "Supported banks",
+  "data": [
+    {
+      "Code": "247247",
+      "Name": "Equity Bank"
+    }
+  ]
+}
+```
+
+```json 400 Bad Request
+{
+  "code": 400,
+  "message": "Failed - Bad Request"
+}
+```
+</ResponseExample>

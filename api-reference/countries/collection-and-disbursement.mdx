@@ -152,19 +152,25 @@ POST /{currency_code}/collect
 
 ---
 
-## Supported banks
+## Banks
 
-List banks supported for the currency.
+Three endpoints cover bank payouts: list the supported banks, resolve an account name, then transfer to the account.
+
+### Supported banks
+
+List banks supported for the currency. Use the returned `Code` as `bank_code` in the bank info and bank transfer requests.
 
 ```
 POST /{currency_code}/banks
 ```
 
+No request body is required.
+
 <CodeGroup>
 ```json 200 Success
 {
   "code": 200,
-  "message": "List of banks",
+  "message": "Supported banks",
   "data": [
     {
       "Code": "247247",
@@ -182,9 +188,12 @@ POST /{currency_code}/banks
 ```
 </CodeGroup>
 
----
+```bash
+curl -X POST "{{base_url}}/kes/banks" \
+  -H "x-api-key: YOUR_CONSUMER_KEY"
+```
 
-## Bank info
+### Bank info
 
 Resolves a bank account number and returns the registered account name. Available for **`kes`** and **`ngn`**.
 
@@ -239,18 +248,16 @@ curl -X POST "{{base_url}}/kes/bank-infor" \
   }'
 ```
 
----
+### Bank transfer
 
-## Bank transfer
-
-Settle a disbursement to a recipient bank account (wallet-funded).
+Settle a disbursement to a recipient bank account (wallet-funded). Track it afterwards with [`POST /{currency_code}/status`](#status) using the returned `transaction_code`.
 
 ```
 POST /{currency_code}/bank-transfer
 ```
 
 <ParamField body="amount" type="number" required>
-  Amount to transfer
+  Amount to transfer. For `kes` the allowed range is **100 – 250,000**.
 </ParamField>
 
 <ParamField body="account_number" type="string" required>
@@ -258,7 +265,15 @@ POST /{currency_code}/bank-transfer
 </ParamField>
 
 <ParamField body="bank_code" type="string" required>
-  Bank code from the banks list
+  Bank code from [`POST /{currency_code}/banks`](#supported-banks)
+</ParamField>
+
+<ParamField body="callback_url" type="string">
+  Optional URL for payment notification
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Optional unique reference used as the `transaction_code`. Auto-generated if omitted.
 </ParamField>
 
 <CodeGroup>
@@ -266,7 +281,8 @@ POST /{currency_code}/bank-transfer
 {
   "amount": 500,
   "account_number": "001918181",
-  "bank_code": "247247"
+  "bank_code": "247247",
+  "callback_url": "https://example.com/hooks/pretium"
 }
 ```
 
@@ -276,7 +292,7 @@ POST /{currency_code}/bank-transfer
   "message": "Message",
   "data": {
     "status": "PENDING",
-    "transaction_code": "DDM6D",
+    "transaction_code": "045c1753-4e5b-4fa8-997b-ee52b78a96fa",
     "message": "Success! Processing payment..."
   }
 }
@@ -289,6 +305,17 @@ POST /{currency_code}/bank-transfer
 }
 ```
 </CodeGroup>
+
+```bash
+curl -X POST "{{base_url}}/kes/bank-transfer" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 500,
+    "account_number": "001918181",
+    "bank_code": "247247"
+  }'
+```
 
 ---
 
