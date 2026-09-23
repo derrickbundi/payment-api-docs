@@ -1,15 +1,51 @@
 ---
 title: Onboarding process
-description: Apply for a Pretium partner account and get API credentials.
+description: Register on the partner dashboard and get API credentials.
 icon: "rocket"
 iconType: "solid"
 ---
 
-To begin your onboarding journey, complete this quick [form](https://docs.google.com/forms/d/1MWxinUbcGBOYJxaEZMCYJCJhBxrlNozAWYvwctFJtHY/edit) to get started, or book a meeting [here](https://calendly.com/pretium-finance) with our team for a walkthrough or to address any questions you may have.
+Register on the [partner dashboard](https://merchant.xwift.africa/register). Pretium creates your account, API keys, and a 14-day trial as soon as you submit the form.
 
-Once we get your details, our onboarding specialists will guide you through **the setup, verification, and integration of your account and API**.
+For a walkthrough, book a meeting [here](https://calendly.com/pretium-finance).
 
-Once onboarded, you'll receive your **API credentials** and **sandbox access** to test crypto transactions securely.
+## 1. Create an account
+
+Open [Create an account](https://merchant.xwift.africa/register) and enter:
+
+- **First name** and **last name** (at least 4 characters each)
+- **Email address** (must be new to Pretium)
+- **Business name**
+
+Select **Create account**. Pretium emails a password to that address.
+
+## 2. Sign in
+
+1. Open [Sign in](https://merchant.xwift.africa/login) and use the email and password from the email.
+2. Enter the verification code sent to the same inbox. The code expires after 30 minutes.
+3. After verification you land on **KYB / KYC**.
+
+## 3. Copy your API keys
+
+Keys are issued at registration. In the dashboard, open **API keys**:
+
+| Key | Use |
+|-----|-----|
+| Consumer key | `x-api-key` on partner APIs (`/v1`, `/v2`, `/account`, `/{currency}`) |
+| Checkout key | `x-api-key` on `/v1/checkout` |
+| Secret key | MCP [`register_agent`](/guides/agents) |
+
+The dashboard and API keys stay available for **14 days**. Submit KYB / KYC before that date. After it, keys pause until the form is submitted. Once submitted, access stays open while Pretium reviews the pack.
+
+## 4. Submit KYB / KYC
+
+The form has three steps:
+
+1. **Business** — legal name, entity type, country of incorporation, what the business does, and expected monthly volume.
+2. **Director** — full name, nationality, government ID, ownership percentage, and phone.
+3. **Documents** — director government ID is required (PDF, JPG, or PNG, up to 8 MB).
+
+Confirm the declaration and submit. You can keep calling the API while the submission is reviewed.
 
 ## Next steps
 
