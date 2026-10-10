@@ -1,14 +1,46 @@
 ---
 title: Wallet balance
 api: POST /account/wallet/{country_id}
-description: Fiat wallet balance for a country.
+description: Fiat wallet balance for a country, including available and current balance.
 ---
 
 <ParamField path="country_id" type="integer" required>
   Country id `1`–`10` (see [API overview](/api-reference/overview#country-ids-account-wallet)).
 </ParamField>
 
-Returns balance, currency code, and country name for that wallet.
+Returns the fiat wallet for that country. The same balance fields are included on each item in `data.wallets` from [Account detail](/api-reference/account/detail).
+
+<ResponseField name="data.id" type="number">
+  Wallet id.
+</ResponseField>
+
+<ResponseField name="data.balance" type="number">
+  Spendable fiat amount. Same value as `available_balance`.
+</ResponseField>
+
+<ResponseField name="data.available_balance" type="number">
+  Amount available to spend. Same value as `balance`.
+</ResponseField>
+
+<ResponseField name="data.current_balance" type="number">
+  Reserved amount on the wallet. `null` when no reserved amount is set.
+</ResponseField>
+
+<ResponseField name="data.currency" type="string">
+  Currency code, such as `KES`.
+</ResponseField>
+
+<ResponseField name="data.country_name" type="string">
+  Country name.
+</ResponseField>
+
+### Errors
+
+| Status | Message | When |
+|--------|---------|------|
+| `404` | `Wallet not found!` | No partner wallet for that country |
+
+On-chain balances use [Crypto balance](/api-reference/account/crypto-balance). Sending crypto out uses [Crypto transfer](/api-reference/account/crypto-transfer).
 
 <RequestExample>
 ```bash
@@ -18,3 +50,20 @@ curl -X POST "{{base_url}}/account/wallet/1" \
   -d '{}'
 ```
 </RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Wallet Balance",
+  "data": {
+    "id": 12,
+    "balance": 50000,
+    "available_balance": 50000,
+    "current_balance": null,
+    "currency": "KES",
+    "country_name": "Kenya"
+  }
+}
+```
+</ResponseExample>

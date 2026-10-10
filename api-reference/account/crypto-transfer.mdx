@@ -1,0 +1,95 @@
+---
+title: Crypto transfer
+api: POST /account/crypto/transfer
+description: Send crypto from the partner wallet to an external address.
+---
+
+Sends `amount` of `asset` from the partner wallet for that network to `address`. The wallet must already exist on the [partner portal](https://merchant.xwift.africa) — ERC-20 for EVM chains, or a Solana / Stellar wallet for those chains.
+
+Supported networks and assets match [Crypto balance](/api-reference/account/crypto-balance#networks-and-assets).
+
+<ParamField body="address" type="string" required>
+  Destination address on `network`.
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Amount to send. Must be greater than `0`.
+</ParamField>
+
+<ParamField body="asset" type="string" required>
+  Token symbol, such as `USDC` or `SOL`. Must be supported on `network`.
+</ParamField>
+
+<ParamField body="network" type="string" required>
+  Chain to send on. Case-insensitive. Same aliases as [Crypto balance](/api-reference/account/crypto-balance#networks-and-assets).
+</ParamField>
+
+<ParamField body="memo" type="string">
+  Optional Stellar memo, up to 28 characters. Sent only when `network` resolves to `STELLAR`. Ignored on other chains.
+</ParamField>
+
+<ResponseField name="data.reference" type="string">
+  Pretium withdrawal reference (UUID).
+</ResponseField>
+
+<ResponseField name="data.amount" type="number">
+  Amount submitted.
+</ResponseField>
+
+<ResponseField name="data.asset" type="string">
+  Normalized asset symbol.
+</ResponseField>
+
+<ResponseField name="data.asset_type" type="string">
+  `native` or `stablecoin`.
+</ResponseField>
+
+<ResponseField name="data.network" type="string">
+  Normalized chain name.
+</ResponseField>
+
+<ResponseField name="data.address" type="string">
+  Destination address.
+</ResponseField>
+
+<ResponseField name="data.transaction_hash" type="string">
+  On-chain transaction hash when the signer returns one.
+</ResponseField>
+
+### Errors
+
+| Status | Message | When |
+|--------|---------|------|
+| `400` | Validation message | Missing fields, `amount` not greater than `0`, or `memo` longer than 28 characters |
+| `400` | `Unauthorized` | API key does not match a partner |
+| `400` | `Unsupported network. Allowed networks: ...` | Unknown chain |
+| `400` | `Unsupported asset {ASSET} on {CHAIN}. Allowed: ...` | Asset is not on that chain |
+| `400` | `No {wallet} wallet found. Create one on the partner portal first.` | No ERC-20, Solana, or Stellar wallet for the chain |
+| `400` | `Failed to initiate {ASSET} transfer on {CHAIN}` | Signer rejected the transfer. A chain error detail is appended when one is returned |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/crypto/transfer" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"network":"BASE","asset":"USDC","amount":25,"address":"0x..."}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "BASE USDC transfer initiated successfully.",
+  "data": {
+    "reference": "7c1e2a40-6b3d-4f1a-9c2e-1a0b8d4e6f21",
+    "amount": 25,
+    "asset": "USDC",
+    "asset_type": "stablecoin",
+    "network": "BASE",
+    "address": "0x...",
+    "transaction_hash": "0x..."
+  }
+}
+```
+</ResponseExample>

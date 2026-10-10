@@ -1,0 +1,83 @@
+---
+title: Crypto balance
+api: POST /account/wallet/crypto/balance
+description: On-chain balance of the partner wallet for a network.
+---
+
+Reads live balances from the partner wallet created on the [partner portal](https://merchant.xwift.africa). Omit `asset` to return every asset on that network.
+
+<ParamField body="network" type="string" required>
+  Chain to query. Case-insensitive. Accepted values and aliases are in the table below.
+</ParamField>
+
+<ParamField body="asset" type="string">
+  Optional token symbol, such as `USDC` or `ETH`. When set, only that asset is returned. Must be supported on `network`.
+</ParamField>
+
+<ResponseField name="data.network" type="string">
+  Normalized chain name, such as `BASE` or `SOLANA`.
+</ResponseField>
+
+<ResponseField name="data.address" type="string">
+  Partner wallet address used for the query.
+</ResponseField>
+
+<ResponseField name="data.balances" type="array">
+  One entry per asset. Each item has `asset`, `asset_type` (`native` or `stablecoin`), and `balance`.
+</ResponseField>
+
+### Networks and assets
+
+EVM networks (`CELO`, `BASE`, `BNB`, `POLYGON`, `ARBITRUM`, `AVALANCHE`, `ETHEREUM`) use the portal **ERC-20** wallet. Solana and Stellar use their own wallets.
+
+| Network | Aliases | Assets |
+|---------|---------|--------|
+| `CELO` | `celo` | `CELO`, `USDT`, `USDC`, `cUSD` |
+| `BASE` | `base` | `ETH`, `USDC` |
+| `BNB` | `bnb`, `bsc`, `binance smart chain` | `BNB`, `USDT`, `USDC` |
+| `POLYGON` | `polygon`, `matic` | `POL`, `MATIC`, `USDT`, `USDC` |
+| `ARBITRUM` | `arbitrum`, `arb` | `ETH`, `USDT`, `USDC` |
+| `AVALANCHE` | `avalanche`, `avax` | `AVAX`, `USDT`, `USDC` |
+| `ETHEREUM` | `ethereum`, `eth` | `ETH`, `USDT`, `USDC` |
+| `SOLANA` | `solana`, `sol` | `SOL`, `USDT`, `USDC` |
+| `STELLAR` | `stellar`, `xlm` | `XLM`, `USDC` |
+
+### Errors
+
+| Status | Message | When |
+|--------|---------|------|
+| `400` | Validation message | Missing `network` |
+| `400` | `Unauthorized` | API key does not match a partner |
+| `400` | `Unsupported network. Allowed networks: ...` | Unknown chain |
+| `400` | `Unsupported asset {ASSET} on {CHAIN}. Allowed: ...` | Asset is not on that chain |
+| `400` | `No {wallet} wallet found. Create one on the partner portal first.` | No ERC-20, Solana, or Stellar wallet for the chain |
+| `400` | `Failed to query balance. Try again later!` | On-chain balance lookup failed |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/wallet/crypto/balance" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"network":"BASE","asset":"USDC"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "On-chain balance",
+  "data": {
+    "network": "BASE",
+    "address": "0x...",
+    "balances": [
+      {
+        "asset": "USDC",
+        "asset_type": "stablecoin",
+        "balance": 1250.5
+      }
+    ]
+  }
+}
+```
+</ResponseExample>

@@ -69,6 +69,8 @@
             "pages": [
               "api-reference/account/detail",
               "api-reference/account/wallet",
+              "api-reference/account/crypto-balance",
+              "api-reference/account/crypto-transfer",
               "api-reference/account/fund",
               "api-reference/account/fund-confirm",
               "api-reference/account/countries",
