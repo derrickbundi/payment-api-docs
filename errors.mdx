@@ -47,6 +47,17 @@ Success responses add a `data` field:
 
 Validation failures usually return the first Laravel validator error string as `message`.
 
+## Payout statuses
+
+Disbursement and offramp payouts report one of these `status` values on the transaction and on webhooks. `message` is the human-readable detail.
+
+| Status | Meaning |
+|--------|---------|
+| `COMPLETE` | Payout succeeded. Message: `Transaction processed successfully.` A provider `receipt_number` is set when one is available. |
+| `PENDING` | Payout was accepted and is still being processed. Message: `Transaction received and is being processed.` |
+| `REFUNDED` | A failed payout whose value was returned. Balance-funded payouts credit the partner wallet. Hash-funded payouts send the stablecoins back on-chain. |
+| `FAILED` | Disbursement did not succeed. Message defaults to `An unexpected error occurred. Please try again.` A provider reason is used when one is returned. Funds stay unsettled until the payout is refunded. |
+
 ## Idempotency
 
 - Optional `reference` — if omitted, a UUID is generated for many money-moving calls.
