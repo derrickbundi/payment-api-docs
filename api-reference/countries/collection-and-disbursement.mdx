@@ -319,30 +319,64 @@ curl -X POST "{{base_url}}/kes/bank-transfer" \
 
 ---
 
-## Validation
+## Beneficiary info
 
-Validates a phone number / shortcode and returns the registered public name from the MNO where available.
-
-Reliability varies by country — avoid heavy dependence on this endpoint alone.
+Looks up the registered name for a mobile-money recipient. Available for **`kes`**, **`ugx`**, **`ghs`**, and **`tzs`**.
 
 ```
-POST /{currency_code}/validation
+POST /{currency_code}/user-infor
 ```
+
+Kenya also accepts `POST /kes/validation` with the same body and response.
+
+A confirmed lookup returns `status` `COMPLETE` and `message` `Beneficiary identity confirmed.` When the name cannot be resolved, the request still returns `200` with `status` `FAILED` and `message` `Unable to confirm beneficiary identity.`
+
+### `kes`
 
 <ParamField body="shortcode" type="string" required>
-  Phone or shortcode to validate
+  Phone, till, or paybill number
 </ParamField>
 
 <ParamField body="type" type="string" required>
-  e.g. `MOBILE`
+  `MOBILE`, `BUY_GOODS`, or `PAYBILL`
 </ParamField>
 
 <ParamField body="network" type="string">
-  e.g. `Safaricom`
+  Required when `type` is `MOBILE`. e.g. `Safaricom`, `Airtel`
+</ParamField>
+
+### `ugx`
+
+<ParamField body="shortcode" type="string" required>
+  Phone number
+</ParamField>
+
+<ParamField body="mobile_network" type="string" required>
+  `MTN` or `Airtel`
+</ParamField>
+
+### `tzs`
+
+<ParamField body="shortcode" type="string" required>
+  Phone number
+</ParamField>
+
+<ParamField body="mobile_network" type="string" required>
+  e.g. `Vodacom`, `Airtel`, `Tigo`, `Halopesa`
+</ParamField>
+
+### `ghs`
+
+<ParamField body="shortcode" type="string" required>
+  10-digit mobile number
+</ParamField>
+
+<ParamField body="bank_code" type="string" required>
+  Wallet destination code, e.g. `MTN`, `AirtelTigo`, or `Telecel`
 </ParamField>
 
 <CodeGroup>
-```json Request body
+```json Request body (kes)
 {
   "shortcode": "0700123456",
   "type": "MOBILE",
@@ -350,14 +384,44 @@ POST /{currency_code}/validation
 }
 ```
 
-```json 200 Success
+```json 200 Success (kes)
 {
   "code": 200,
-  "message": "Validation results",
+  "message": "User KYC",
   "data": {
     "status": "COMPLETE",
     "shortcode": "0700123456",
-    "public_name": "JOHN DOE"
+    "public_name": "JOHN DOE",
+    "name": "JOHN DOE",
+    "message": "Beneficiary identity confirmed."
+  }
+}
+```
+
+```json 200 Success (ugx, tzs)
+{
+  "code": 200,
+  "message": "User KYC",
+  "data": {
+    "status": "COMPLETE",
+    "name": "JOHN DOE",
+    "shortcode": "0700123456",
+    "message": "Beneficiary identity confirmed."
+  }
+}
+```
+
+```json 200 Success (ghs)
+{
+  "code": 200,
+  "message": "KYC Information",
+  "data": {
+    "status": "COMPLETE",
+    "account_name": "JOHN DOE",
+    "account_number": "0244123456",
+    "bank_name": "MTN",
+    "bank_code": "MTN",
+    "message": "Beneficiary identity confirmed."
   }
 }
 ```
@@ -369,6 +433,17 @@ POST /{currency_code}/validation
 }
 ```
 </CodeGroup>
+
+```bash
+curl -X POST "{{base_url}}/kes/user-infor" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shortcode": "0700123456",
+    "type": "MOBILE",
+    "network": "Safaricom"
+  }'
+```
 
 ---
 
