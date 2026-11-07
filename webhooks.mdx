@@ -1,6 +1,6 @@
 ---
 title: Webhooks
-description: Outbound callbacks for transaction and checkout status.
+description: Outbound callbacks and signature verification for transaction and checkout status.
 icon: "webhook"
 iconType: "solid"
 ---
@@ -14,6 +14,50 @@ Pretium posts JSON to your callback URL when a payment reaches a terminal or upd
 - Retries: not guaranteed on failure (failed deliveries are logged; you can recall some callbacks from the portal)
 
 Always treat webhooks as **at-least-once** hints and reconcile with the status API.
+
+## Signature
+
+Create a **webhook signing key** in the partner portal. Until you do, callbacks are sent with no signature.
+
+When a key exists, each delivery includes:
+
+```
+x-signature-key: HMAC_SHA512_HEX
+```
+
+The value is the lowercase hex HMAC-SHA512 of the **raw JSON body**, using your signing key. Verify that exact body. Re-encoding the JSON will not match.
+
+```php
+$raw = file_get_contents('php://input');
+$signature = strtolower(trim($_SERVER['HTTP_X_SIGNATURE_KEY'] ?? ''));
+
+if ($signature === '' || !hash_equals(hash_hmac('sha512', $raw, $signingKey), $signature)) {
+    http_response_code(401);
+    exit;
+}
+```
+
+```js
+const crypto = require('crypto');
+
+function verifyWebhook(rawBody, signature, signingKey) {
+  const expected = crypto.createHmac('sha512', signingKey).update(rawBody).digest('hex');
+  const a = Buffer.from(signature.trim().toLowerCase());
+  const b = Buffer.from(expected);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+```
+
+```python
+import hashlib
+import hmac
+
+def verify_webhook(raw_body: bytes, signature: str, signing_key: str) -> bool:
+    expected = hmac.new(signing_key.encode(), raw_body, hashlib.sha512).hexdigest()
+    return hmac.compare_digest(expected, signature.strip().lower())
+```
+
+Replacing the key in the portal stops the previous key from verifying new deliveries.
 
 ## Transaction callback
 
