@@ -1,13 +1,24 @@
 ---
 title: Cards
-description: Issue USD virtual cards, move funds, and read card activity.
+description: Issue USD virtual cards for online checkout, one-off payments, and auto-renewal subscriptions.
 icon: "credit-card"
 iconType: "solid"
 ---
 
-The card API issues a USD virtual Visa or Mastercard for a cardholder you register. Authenticate with your partner **consumer key** (`x-api-key`). Every endpoint is `POST` with a JSON body under `/card`.
+The card API issues a USD virtual Visa or Mastercard for online checkout. A cardholder pays with the card number, expiration, security code, and billing address. Authenticate with your partner **consumer key** (`x-api-key`). Every endpoint is `POST` with a JSON body under `/card`.
 
-When the card product is turned off, each call returns `400` with `Service temporarily unavailable!`.
+## Online payments and subscriptions
+
+Use the card anywhere a merchant accepts Visa or Mastercard online: stores, invoices, app stores, and ads. Cards created here are virtual. `is_contactless_payment` is `false`, and `is_physical` stays unset unless the issuer reports otherwise.
+
+Auto-renewal is chosen once, on [create card](/api-reference/cards/create), with `is_non_subscription`:
+
+| `is_non_subscription` | Subscriptions | Typical use |
+|-----------------------|---------------|-------------|
+| `true` (default) | Blocked | One-off online payments. A merchant cannot charge the card again on a renewal. |
+| `false` | Allowed | Streaming, SaaS, and other plans that store the card and bill it automatically. |
+
+Renewals draw from the card balance. [Fund the card](/api-reference/cards/fund) before a billing date so the charge can clear, and [freeze](/api-reference/cards/freeze) it to stop further spend.
 
 ## Flow
 
@@ -56,9 +67,9 @@ Create, list, and get return this object. Fund, withdraw, freeze, and unfreeze r
 | `mask` | Masked card number |
 | `last4` | Last four digits |
 | `expiration` | Expiry from the issuer |
-| `is_non_subscription` | Whether the card was issued as a non-subscription card |
-| `is_contactless_payment` | Contactless flag reported for the card |
-| `is_physical` | `true`, `false`, or `null` |
+| `is_non_subscription` | `true` when auto-renewal is blocked, `false` when merchants may bill the card again |
+| `is_contactless_payment` | `false` on cards created through this API |
+| `is_physical` | `true`, `false`, or `null`. Cards created here are virtual |
 | `billing_address` | `address`, `city`, `state`, `zip_code`, `country`, or `null` |
 | `last_used_on` | Last use time, or `null` |
 | `created_at`, `updated_at` | Timestamps |

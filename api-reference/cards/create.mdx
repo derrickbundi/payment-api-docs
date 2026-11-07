@@ -1,10 +1,12 @@
 ---
 title: Create card
 api: POST /card/create
-description: Issue one USD virtual card for a cardholder and load the opening amount.
+description: Issue one USD virtual card for online checkout and load the opening amount.
 ---
 
-Issues one virtual card in **USD** and loads `amount` onto it. Each cardholder can have one card.
+Issues one virtual card in **USD** for online checkout and loads `amount` onto it. Each cardholder can have one card.
+
+`is_non_subscription` controls auto-renewal. Leave it `true` (the default) to block recurring charges. Set it to `false` when a merchant should be able to store the card and bill it again, such as a streaming or SaaS plan. Contactless is off for cards created here.
 
 The response includes `card_number` and `security_code`. See the [card object](/guides/cards#card-object).
 
@@ -29,7 +31,7 @@ The response includes `card_number` and `security_code`. See the [card object](/
 </ParamField>
 
 <ParamField body="is_non_subscription" type="boolean">
-  Issue the card as a non-subscription card. Defaults to `true`.
+  `true` (default) blocks merchant auto-renewal. `false` allows a merchant to charge the card again when a subscription renews.
 </ParamField>
 
 ### Errors
