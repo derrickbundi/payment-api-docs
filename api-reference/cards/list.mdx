@@ -1,0 +1,78 @@
+---
+title: List cards
+api: POST /card/all
+description: List virtual cards for your partner account, including card number and security code.
+---
+
+Returns cards for the authenticated partner, newest first. Each card includes `card_number` and `security_code`. See the [card object](/guides/cards#card-object).
+
+<ParamField body="page" type="integer">
+  Page number, starting at `1`. Defaults to `1`.
+</ParamField>
+
+<ParamField body="limit" type="integer">
+  Page size. Must be at least `1`. Defaults to `20`.
+</ParamField>
+
+<ResponseField name="data.cards" type="array">
+  [Card objects](/guides/cards#card-object), including `card_number` and `security_code`.
+</ResponseField>
+
+<ResponseField name="data.page" type="integer">
+  Page that was returned.
+</ResponseField>
+
+<ResponseField name="data.limit" type="integer">
+  Page size that was applied.
+</ResponseField>
+
+<ResponseField name="data.total" type="integer">
+  Total cards for this partner.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/card/all" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"page": 1, "limit": 20}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "All cards.",
+  "data": {
+    "cards": [
+      {
+        "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "title": "Ada Lovelace",
+        "color": "black",
+        "name": "ADA LOVELACE",
+        "brand": "visa",
+        "currency": "USD",
+        "balance": "25.00",
+        "status": "active",
+        "mask": "424242******4242",
+        "last4": "4242",
+        "expiration": "12/28",
+        "is_non_subscription": true,
+        "is_contactless_payment": false,
+        "is_physical": false,
+        "billing_address": null,
+        "last_used_on": null,
+        "created_at": "2026-11-07T08:00:00+00:00",
+        "updated_at": "2026-11-07T08:00:00+00:00",
+        "card_number": "4242424242424242",
+        "security_code": "123"
+      }
+    ],
+    "page": 1,
+    "limit": 20,
+    "total": 1
+  }
+}
+```
+</ResponseExample>

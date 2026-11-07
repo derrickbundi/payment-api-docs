@@ -44,6 +44,11 @@ Success responses add a `data` field:
 | `Unsupported network. Allowed networks: ...` | Invalid `chain` |
 | Hash already processed | `transaction_hash` reused (idempotent block via `master_hashes`) |
 | Payment lock / maintenance messages | Country ramp temporarily disabled |
+| `Service temporarily unavailable!` | Card API is not enabled |
+| `Card user not found.` | `user_id` does not belong to this partner |
+| `Card not found.` | Cardholder has no card that this call can use |
+| `Card user already has a card.` | A second card was requested for the same cardholder |
+| `Card has insufficient balance.` | Withdrawal is larger than the card balance |
 
 Validation failures usually return the first Laravel validator error string as `message`.
 

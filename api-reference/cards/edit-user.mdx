@@ -1,0 +1,88 @@
+---
+title: Edit card user
+api: POST /card/edit-user
+description: Update a cardholder's phone, address, and identity document.
+---
+
+Updates phone, address, and identity fields for a cardholder that belongs to your partner account. `first_name`, `last_name`, and `email` cannot be changed here.
+
+<ParamField body="user_id" type="string" required>
+  Cardholder id returned by [create card user](/api-reference/cards/create-user).
+</ParamField>
+
+<ParamField body="phone" type="string" required>
+  Phone number.
+</ParamField>
+
+<ParamField body="country" type="string" required>
+  Country.
+</ParamField>
+
+<ParamField body="state" type="string" required>
+  State or region.
+</ParamField>
+
+<ParamField body="city" type="string" required>
+  City.
+</ParamField>
+
+<ParamField body="address" type="string" required>
+  Street address.
+</ParamField>
+
+<ParamField body="zip_code" type="string" required>
+  Postal code.
+</ParamField>
+
+<ParamField body="id_type" type="string" required>
+  `National_ID`, `Passport`, or `Driving_License`.
+</ParamField>
+
+<ParamField body="id_number" type="string" required>
+  Government ID number. Must not belong to a different cardholder.
+</ParamField>
+
+The response is a short [card user](/guides/cards#card-user-object): `user_id`, `email`, and `name`.
+
+### Errors
+
+| Message | When |
+|---------|------|
+| First validator error | A required field is missing or `id_type` is invalid |
+| `Card user not found.` | `user_id` is missing for this partner |
+| `Card user can't be edited because a card has not been created. Create a card first.` | The cardholder has no issuer profile |
+| `The id number has already been taken.` | ID number belongs to another cardholder |
+| `An unexpected error occurred. Please try again.` | The update could not be completed |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/card/edit-user" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "phone": "254712345678",
+    "country": "KE",
+    "state": "Nairobi",
+    "city": "Nairobi",
+    "address": "10 Riverside Drive",
+    "zip_code": "00100",
+    "id_type": "Passport",
+    "id_number": "P987654321"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Card user updated.",
+  "data": {
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "email": "ada@example.com",
+    "name": "Ada Lovelace"
+  }
+}
+```
+</ResponseExample>

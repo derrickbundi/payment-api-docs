@@ -1,0 +1,92 @@
+---
+title: Card transactions
+api: POST /card/transactions
+description: List issuer activity for a cardholder's card, including a closed card.
+---
+
+Returns activity for the cardholder's card. Unlike [get card](/api-reference/cards/get), this still resolves a `terminated` or `terminating` card.
+
+`type` and `status` on each row are the issuer's values, lowercased. `page`, `limit`, and `total` are included when the issuer returns them.
+
+<ParamField body="user_id" type="string" required>
+  Cardholder id returned by [create card user](/api-reference/cards/create-user).
+</ParamField>
+
+<ParamField body="query" type="string">
+  Optional search string forwarded to the issuer.
+</ParamField>
+
+<ParamField body="from" type="string">
+  Optional start of the range, forwarded to the issuer.
+</ParamField>
+
+<ParamField body="to" type="string">
+  Optional end of the range, forwarded to the issuer.
+</ParamField>
+
+<ParamField body="type" type="string">
+  Optional transaction type filter, forwarded to the issuer.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Optional status filter, forwarded to the issuer.
+</ParamField>
+
+<ResponseField name="data.user_id" type="string">
+  Cardholder id.
+</ResponseField>
+
+<ResponseField name="data.transactions" type="array">
+  Rows with `date`, `type`, `status`, `amount`, `currency`, `balance_before`, `balance_after`, `authorization` (`amount` and `currency`, or `null`), `created_at`, and `processed_at`.
+</ResponseField>
+
+### Errors
+
+| Message | When |
+|---------|------|
+| `Card user not found.` | `user_id` is missing for this partner |
+| `Card not found.` | The cardholder has no card |
+| `Partner not found.` | The API key does not match a partner |
+| `An unexpected error occurred. Please try again.` | Transactions could not be loaded |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/card/transactions" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "from": "2026-11-01",
+    "to": "2026-11-07"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Card transactions.",
+  "data": {
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "transactions": [
+      {
+        "date": "2026-11-07",
+        "type": "debit",
+        "status": "successful",
+        "amount": "12.50",
+        "currency": "USD",
+        "balance_before": "25.00",
+        "balance_after": "12.50",
+        "authorization": {
+          "amount": "12.50",
+          "currency": "USD"
+        },
+        "created_at": "2026-11-07T08:30:00Z",
+        "processed_at": "2026-11-07T08:30:02Z"
+      }
+    ]
+  }
+}
+```
+</ResponseExample>

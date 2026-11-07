@@ -1,0 +1,39 @@
+---
+title: Terminate card
+api: POST /card/terminate
+description: Close a card by issuer card id.
+---
+
+Closes a card. This call takes `card_id`, the issuer card id. The other card endpoints identify the card with `user_id`, and the [card object](/guides/cards#card-object) does not include `card_id`.
+
+`data` is the issuer result and may be `null`. It is not a card object.
+
+<ParamField body="card_id" type="string" required>
+  Issuer card id.
+</ParamField>
+
+### Errors
+
+| Message | When |
+|---------|------|
+| `The card id field is required.` | `card_id` is missing |
+| `An unexpected error occurred. Please try again.` | The card could not be terminated |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/card/terminate" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"card_id": "issuer-card-id"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Card terminated successfully.",
+  "data": null
+}
+```
+</ResponseExample>

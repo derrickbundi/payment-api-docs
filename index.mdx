@@ -10,7 +10,7 @@ sidebarTitle: Introduction
   className="landing-hero"
 />
 
-Pretium (served at `{{base_url}}`) lets partners collect and disburse fiat across African markets, settle with stablecoins on-chain, and run hosted checkout. For AI assistants, add Pretium as an [MCP server](/guides/agents) in Cursor, Claude, or ChatGPT — no REST agent integration required.
+Pretium (served at `{{base_url}}`) lets partners collect and disburse fiat across African markets, settle with stablecoins on-chain, issue USD virtual cards, and run hosted checkout. For AI assistants, add Pretium as an [MCP server](/guides/agents) in Cursor, Claude, or ChatGPT — no REST agent integration required.
 
 ## Onboarding process
 
@@ -27,6 +27,9 @@ Pretium (served at `{{base_url}}`) lets partners collect and disburse fiat acros
   </Card>
   <Card title="Checkout" icon="cart-shopping" href="/guides/checkout">
     Hosted settlement flow with a checkout key and order lifecycle.
+  </Card>
+  <Card title="Cards" icon="credit-card" href="/guides/cards">
+    Issue USD virtual Visa and Mastercard cards, then fund, freeze, and read them.
   </Card>
   <Card title="AI agents (MCP)" icon="robot" href="/guides/agents">
     Add Pretium in Cursor, Claude, or ChatGPT and let agents pay via MCP tools.
@@ -56,6 +59,7 @@ Pretium (served at `{{base_url}}`) lets partners collect and disburse fiat acros
 | Account | `/account` | Partner `consumer_key` |
 | Collection & disbursement | `/{currency}` | Partner `consumer_key` |
 | Checkout | `/v1/checkout` | Partner `checkout_key` |
+| Cards | `/card` | Partner `consumer_key` |
 | AI agents | [MCP guide](/guides/agents) | MCP server (`mcp.pretium.africa`), not REST |
 
 Almost all partner Pretium endpoints are **POST** with a JSON body.

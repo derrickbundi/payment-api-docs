@@ -1,0 +1,97 @@
+---
+title: Create card user
+api: POST /card/create-user
+description: Register a cardholder and receive the user_id used by the other card endpoints.
+---
+
+Creates a cardholder on your partner account. Email and ID number must not already be registered. Use `data.user_id` when you [create a card](/api-reference/cards/create).
+
+<ParamField body="first_name" type="string" required>
+  Cardholder given name.
+</ParamField>
+
+<ParamField body="last_name" type="string" required>
+  Cardholder family name.
+</ParamField>
+
+<ParamField body="email" type="string" required>
+  Email address. Must be unique.
+</ParamField>
+
+<ParamField body="phone" type="string" required>
+  Phone number.
+</ParamField>
+
+<ParamField body="country" type="string" required>
+  Country.
+</ParamField>
+
+<ParamField body="state" type="string" required>
+  State or region.
+</ParamField>
+
+<ParamField body="city" type="string" required>
+  City.
+</ParamField>
+
+<ParamField body="address" type="string" required>
+  Street address.
+</ParamField>
+
+<ParamField body="zip_code" type="string" required>
+  Postal code.
+</ParamField>
+
+<ParamField body="id_type" type="string" required>
+  `National_ID`, `Passport`, or `Driving_License`.
+</ParamField>
+
+<ParamField body="id_number" type="string" required>
+  Government ID number. Must be unique.
+</ParamField>
+
+The response is a short [card user](/guides/cards#card-user-object): `user_id`, `email`, and `name`. Address and ID fields are stored and are not echoed back.
+
+### Errors
+
+| Message | When |
+|---------|------|
+| First validator error | A required field is missing, `email` is not an email, or `id_type` is not one of the allowed values |
+| `The email has already been taken.` | Email is already registered |
+| `The id number has already been taken.` | ID number is already registered |
+| `An unexpected error occurred. Please try again.` | The cardholder could not be created |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/card/create-user" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Ada",
+    "last_name": "Lovelace",
+    "email": "ada@example.com",
+    "phone": "254712345678",
+    "country": "KE",
+    "state": "Nairobi",
+    "city": "Nairobi",
+    "address": "1 Market Street",
+    "zip_code": "00100",
+    "id_type": "National_ID",
+    "id_number": "A12345678"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Card user created.",
+  "data": {
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "email": "ada@example.com",
+    "name": "Ada Lovelace"
+  }
+}
+```
+</ResponseExample>

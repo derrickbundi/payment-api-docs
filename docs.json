@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Pretium",
-  "description": "API documentation for Pretium payment rails \u2014 offramp, onramp, checkout, and MCP for AI agents in Cursor, Claude, and ChatGPT.",
+  "description": "API documentation for Pretium payment rails \u2014 offramp, onramp, checkout, cards, and MCP for AI agents in Cursor, Claude, and ChatGPT.",
   "colors": {
     "primary": "#0B6E4F",
     "light": "#12A974",
@@ -49,6 +49,7 @@
               "guides/offramp",
               "guides/onramp",
               "guides/checkout",
+              "guides/cards",
               "guides/agents",
               "guides/collection-and-disbursements"
             ]
@@ -114,6 +115,23 @@
               "api-reference/checkout/status",
               "api-reference/checkout/pay",
               "api-reference/checkout/networks"
+            ]
+          },
+          {
+            "group": "Cards",
+            "pages": [
+              "api-reference/cards/create-user",
+              "api-reference/cards/edit-user",
+              "api-reference/cards/users",
+              "api-reference/cards/create",
+              "api-reference/cards/list",
+              "api-reference/cards/get",
+              "api-reference/cards/transactions",
+              "api-reference/cards/fund",
+              "api-reference/cards/withdraw",
+              "api-reference/cards/freeze",
+              "api-reference/cards/unfreeze",
+              "api-reference/cards/terminate"
             ]
           },
           {

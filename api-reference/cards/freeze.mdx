@@ -1,0 +1,61 @@
+---
+title: Freeze card
+api: POST /card/freeze
+description: Block spending on a cardholder's open card.
+---
+
+Freezes the cardholder's open card. Status becomes `frozen`. Unfreeze with [POST /card/unfreeze](/api-reference/cards/unfreeze).
+
+The response is a [card object](/guides/cards#card-object) without `card_number` or `security_code`.
+
+<ParamField body="user_id" type="string" required>
+  Cardholder id returned by [create card user](/api-reference/cards/create-user).
+</ParamField>
+
+### Errors
+
+| Message | When |
+|---------|------|
+| `The user id field is required.` | `user_id` is missing |
+| `Card user not found.` | `user_id` is missing for this partner |
+| `Card not found.` | The cardholder has no open card |
+| `Partner not found.` | The API key does not match a partner |
+| `An unexpected error occurred. Please try again.` | The card could not be frozen |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/card/freeze" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Card frozen successfully.",
+  "data": {
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "title": "Ada Lovelace",
+    "color": "black",
+    "name": "ADA LOVELACE",
+    "brand": "visa",
+    "currency": "USD",
+    "balance": "25.00",
+    "status": "frozen",
+    "mask": "424242******4242",
+    "last4": "4242",
+    "expiration": "12/28",
+    "is_non_subscription": true,
+    "is_contactless_payment": false,
+    "is_physical": false,
+    "billing_address": null,
+    "last_used_on": null,
+    "created_at": "2026-11-07T08:00:00+00:00",
+    "updated_at": "2026-11-07T09:20:00+00:00"
+  }
+}
+```
+</ResponseExample>

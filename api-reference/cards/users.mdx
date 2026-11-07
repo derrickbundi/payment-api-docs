@@ -1,0 +1,95 @@
+---
+title: List card users
+api: POST /card/users
+description: List cardholders for your partner account, with their cards.
+---
+
+Returns cardholders for the authenticated partner, newest first. Nested cards omit `card_number` and `security_code`. ID type and ID number are not included.
+
+<ParamField body="page" type="integer">
+  Page number, starting at `1`. Defaults to `1`.
+</ParamField>
+
+<ParamField body="limit" type="integer">
+  Page size. Must be at least `1`. Defaults to `20`.
+</ParamField>
+
+<ResponseField name="data.users" type="array">
+  Cardholders. Each item has `user_id`, `email`, `name`, `phone`, `country`, `state`, `city`, `address`, `zip_code`, and `cards`.
+</ResponseField>
+
+<ResponseField name="data.page" type="integer">
+  Page that was returned.
+</ResponseField>
+
+<ResponseField name="data.limit" type="integer">
+  Page size that was applied.
+</ResponseField>
+
+<ResponseField name="data.total" type="integer">
+  Total cardholders for this partner.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/card/users" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"page": 1, "limit": 20}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Card users.",
+  "data": {
+    "users": [
+      {
+        "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "email": "ada@example.com",
+        "name": "Ada Lovelace",
+        "phone": "254712345678",
+        "country": "KE",
+        "state": "Nairobi",
+        "city": "Nairobi",
+        "address": "1 Market Street",
+        "zip_code": "00100",
+        "cards": [
+          {
+            "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+            "title": "Ada Lovelace",
+            "color": "black",
+            "name": "ADA LOVELACE",
+            "brand": "visa",
+            "currency": "USD",
+            "balance": "25.00",
+            "status": "active",
+            "mask": "424242******4242",
+            "last4": "4242",
+            "expiration": "12/28",
+            "is_non_subscription": true,
+            "is_contactless_payment": false,
+            "is_physical": false,
+            "billing_address": {
+              "address": "1 Market Street",
+              "city": "Nairobi",
+              "state": "Nairobi",
+              "zip_code": "00100",
+              "country": "KE"
+            },
+            "last_used_on": null,
+            "created_at": "2026-11-07T08:00:00+00:00",
+            "updated_at": "2026-11-07T08:00:00+00:00"
+          }
+        ]
+      }
+    ],
+    "page": 1,
+    "limit": 20,
+    "total": 1
+  }
+}
+```
+</ResponseExample>

@@ -1,0 +1,95 @@
+---
+title: Create card
+api: POST /card/create
+description: Issue one USD virtual card for a cardholder and load the opening amount.
+---
+
+Issues one virtual card in **USD** and loads `amount` onto it. Each cardholder can have one card.
+
+The response includes `card_number` and `security_code`. See the [card object](/guides/cards#card-object).
+
+<ParamField body="user_id" type="string" required>
+  Cardholder id returned by [create card user](/api-reference/cards/create-user).
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Opening balance in USD. Must be greater than `0.9`.
+</ParamField>
+
+<ParamField body="brand" type="string" required>
+  `visa` or `mastercard`.
+</ParamField>
+
+<ParamField body="title" type="string">
+  Display title. Defaults to the cardholder's full name.
+</ParamField>
+
+<ParamField body="color" type="string">
+  `blue`, `black`, `purple`, `orange`, or `yellow`. Defaults to `black`.
+</ParamField>
+
+<ParamField body="is_non_subscription" type="boolean">
+  Issue the card as a non-subscription card. Defaults to `true`.
+</ParamField>
+
+### Errors
+
+| Message | When |
+|---------|------|
+| First validator error | `user_id` is missing, `amount` is not greater than `0.9`, or `brand` / `color` is invalid |
+| `Card user not found.` | `user_id` is unknown, or the cardholder was not provisioned |
+| `Card user already has a card.` | This cardholder already has a card |
+| `An unexpected error occurred. Please try again.` | The card could not be issued |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/card/create" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "amount": 25,
+    "brand": "visa",
+    "title": "Ada Lovelace",
+    "color": "black",
+    "is_non_subscription": true
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Card created.",
+  "data": {
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "title": "Ada Lovelace",
+    "color": "black",
+    "name": "ADA LOVELACE",
+    "brand": "visa",
+    "currency": "USD",
+    "balance": "25.00",
+    "status": "active",
+    "mask": "424242******4242",
+    "last4": "4242",
+    "expiration": "12/28",
+    "is_non_subscription": true,
+    "is_contactless_payment": false,
+    "is_physical": false,
+    "billing_address": {
+      "address": "1 Market Street",
+      "city": "Nairobi",
+      "state": "Nairobi",
+      "zip_code": "00100",
+      "country": "KE"
+    },
+    "last_used_on": null,
+    "created_at": "2026-11-07T08:00:00+00:00",
+    "updated_at": "2026-11-07T08:00:00+00:00",
+    "card_number": "4242424242424242",
+    "security_code": "123"
+  }
+}
+```
+</ResponseExample>
