@@ -1,29 +1,38 @@
 ---
 title: Withdraw from card
 api: POST /card/withdraw
-description: Debit a cardholder's open card. Amount must be greater than 0.9.
+description: Debit a cardholder's open card into a fiat wallet. Amount must be greater than 0.9.
 ---
 
-Debits `amount` from the cardholder's open card. `amount` must be greater than `0.9`.
+Debits `amount` from the cardholder's open card and credits the partner fiat wallet for `currency_code`. `amount` is in the card currency (USD) and must be greater than `0.9`.
 
-The response is a [card object](/guides/cards#card-object) without `card_number` or `security_code`. `balance` is the balance after the debit.
+The wallet is credited `amount` × the current buying rate for that currency, rounded to two decimals. A USD wallet uses a rate of `1`. The success `message` names the credited amount and the wallet's country, for example `Card withdrawn successfully. KES 1,310.00 credited to Kenya.` The amount in that message follows the rate at request time.
+
+The response `data` is a [card object](/guides/cards#card-object) without `card_number` or `security_code`. `balance` is the balance after the debit.
 
 <ParamField body="user_id" type="string" required>
   Cardholder id returned by [create card user](/api-reference/cards/create-user).
 </ParamField>
 
 <ParamField body="amount" type="number" required>
-  Amount to remove, in the card currency. Must be greater than `0.9`.
+  Amount to remove, in the card currency (USD). Must be greater than `0.9`.
+</ParamField>
+
+<ParamField body="currency_code" type="string" required>
+  Currency of the fiat wallet that receives the withdrawal, such as `KES` or `UGX`. Matching is case-insensitive. Maximum 12 characters. The partner account must already have a wallet for that currency.
 </ParamField>
 
 ### Errors
 
 | Message | When |
 |---------|------|
-| First validator error | `user_id` is missing or `amount` is not greater than `0.9` |
+| First validator error | `user_id` or `currency_code` is missing, `currency_code` is longer than 12 characters, or `amount` is not greater than `0.9` |
 | `Card user not found.` | `user_id` is missing for this partner |
 | `Card not found.` | The cardholder has no open card |
 | `Card has insufficient balance.` | The card cannot cover `amount` |
+| `Fiat wallet not found for this currency.` | No partner fiat wallet matches `currency_code` |
+| `Exchange rate is unavailable for this wallet.` | The buying rate for that wallet cannot be loaded |
+| `USD 10.00 left the card, but Kenya was not credited. Do not retry.` | The card was debited, but the fiat wallet was not credited. The currency, amount, and country name come from the request. Do not send the withdrawal again. |
 | `Partner not found.` | The API key does not match a partner |
 | `An unexpected error occurred. Please try again.` | The withdrawal could not be completed |
 
@@ -34,7 +43,8 @@ curl -X POST "{{base_url}}/card/withdraw" \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-    "amount": 10
+    "amount": 10,
+    "currency_code": "KES"
   }'
 ```
 </RequestExample>
@@ -43,7 +53,7 @@ curl -X POST "{{base_url}}/card/withdraw" \
 ```json
 {
   "code": 200,
-  "message": "Card withdrawn successfully.",
+  "message": "Card withdrawn successfully. KES 1,310.00 credited to Kenya.",
   "data": {
     "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
     "title": "Ada Lovelace",
