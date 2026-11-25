@@ -1,10 +1,10 @@
 ---
 title: Geo Data
-api: POST /account/geo-data
+api: GET /account/geo-data
 description: Countries and the divisions under them, from regions and counties down to sub-counties and parishes.
 ---
 
-Geo data is the place list for an address. Each country names its own levels. Call this with no filters to see those levels, then pass `country` and one level at a time until you reach the place you need.
+Geo data is the place list for an address. Each country names its own levels. Call this with no query parameters to see those levels, then add `country` and one level at a time until you reach the place you need.
 
 Levels differ by country:
 
@@ -16,37 +16,37 @@ Levels differ by country:
 | Tanzania | `region`, `district` |
 | Uganda | `district`, `county`, `subcounty`, `parish` |
 
-Pass filters in that order. A subcounty request also needs the district and county above it. Matching ignores case. Older spellings are accepted and returned under the current name, such as `Taita-Taveta` for `Taita Taveta`. Plural keys are accepted when they name that country's level: `counties`, `subcounties`, `districts`, `regions`, `states`, `lgas`, `parishes`.
+Put each filter in the query string, in that order. A subcounty request also needs the district and county above it. Matching ignores case. Older spellings are accepted and returned under the current name, such as `Taita-Taveta` for `Taita Taveta`. Plural keys are accepted when they name that country's level: `counties`, `subcounties`, `districts`, `regions`, `states`, `lgas`, `parishes`.
 
-<ParamField body="country" type="string">
+<ParamField query="country" type="string">
   Country name: `Ghana`, `Kenya`, `Nigeria`, `Tanzania`, or `Uganda`. Omit it to list countries and their levels.
 </ParamField>
 
-<ParamField body="region" type="string">
+<ParamField query="region" type="string">
   Ghana or Tanzania region. Returns its districts.
 </ParamField>
 
-<ParamField body="district" type="string">
+<ParamField query="district" type="string">
   Ghana or Tanzania district, or a Uganda district. A Uganda district returns its counties.
 </ParamField>
 
-<ParamField body="county" type="string">
+<ParamField query="county" type="string">
   Kenya county, or a Uganda county. A Kenya county returns sub-counties. A Uganda county requires `district` and returns sub-counties.
 </ParamField>
 
-<ParamField body="subcounty" type="string">
+<ParamField query="subcounty" type="string">
   Kenya sub-county, which requires `county`, or a Uganda sub-county, which requires `district` and `county` and returns parishes.
 </ParamField>
 
-<ParamField body="state" type="string">
+<ParamField query="state" type="string">
   Nigeria state. Returns its local government areas.
 </ParamField>
 
-<ParamField body="lga" type="string">
+<ParamField query="lga" type="string">
   Nigeria local government area. Requires `state`.
 </ParamField>
 
-<ParamField body="parish" type="string">
+<ParamField query="parish" type="string">
   Uganda parish. Requires `district`, `county`, and `subcounty`.
 </ParamField>
 
@@ -57,53 +57,43 @@ Pass filters in that order. A subcounty request also needs the district and coun
 List countries and the filter names each one accepts:
 
 ```bash
-curl -X POST "https://api.xwift.africa/account/geo-data" \
-  -H "x-api-key: YOUR_CONSUMER_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{}'
+curl "https://api.xwift.africa/account/geo-data" \
+  -H "x-api-key: YOUR_CONSUMER_KEY"
 ```
 
 Kenya counties:
 
 ```bash
-curl -X POST "https://api.xwift.africa/account/geo-data" \
-  -H "x-api-key: YOUR_CONSUMER_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"country":"Kenya"}'
+curl "https://api.xwift.africa/account/geo-data?country=Kenya" \
+  -H "x-api-key: YOUR_CONSUMER_KEY"
 ```
 
 Sub-counties in Nairobi:
 
 ```bash
-curl -X POST "https://api.xwift.africa/account/geo-data" \
-  -H "x-api-key: YOUR_CONSUMER_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"country":"Kenya","county":"Nairobi"}'
+curl "https://api.xwift.africa/account/geo-data?country=Kenya&county=Nairobi" \
+  -H "x-api-key: YOUR_CONSUMER_KEY"
 ```
 
 Districts in Greater Accra:
 
 ```bash
-curl -X POST "https://api.xwift.africa/account/geo-data" \
-  -H "x-api-key: YOUR_CONSUMER_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"country":"Ghana","region":"Greater Accra"}'
+curl "https://api.xwift.africa/account/geo-data?country=Ghana&region=Greater%20Accra" \
+  -H "x-api-key: YOUR_CONSUMER_KEY"
 ```
 
 Parishes under Kampala Central:
 
 ```bash
-curl -X POST "https://api.xwift.africa/account/geo-data" \
-  -H "x-api-key: YOUR_CONSUMER_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"country":"Uganda","district":"Kampala","county":"Kampala Central Division","subcounty":"Kampala Central"}'
+curl "https://api.xwift.africa/account/geo-data?country=Uganda&district=Kampala&county=Kampala%20Central%20Division&subcounty=Kampala%20Central" \
+  -H "x-api-key: YOUR_CONSUMER_KEY"
 ```
 
 ### Errors
 
 | Message | When |
 |---------|------|
-| `country is required.` | A level filter was sent without `country` |
+| `country is required.` | A level query parameter was sent without `country` |
 | `Unsupported country. Allowed: Ghana, Kenya, Nigeria, Tanzania, Uganda.` | `country` is not one of those names |
 | `Unknown filter {key}. Use: {levels}.` | The filter is not a level for that country |
 | `Pass {level} before {level}.` | A deeper level was sent without the level above it |
@@ -112,10 +102,8 @@ curl -X POST "https://api.xwift.africa/account/geo-data" \
 
 <RequestExample>
 ```bash
-curl -X POST "{{base_url}}/account/geo-data" \
-  -H "x-api-key: YOUR_CONSUMER_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"country":"Kenya","county":"Nairobi"}'
+curl "{{base_url}}/account/geo-data?country=Kenya&county=Nairobi" \
+  -H "x-api-key: YOUR_CONSUMER_KEY"
 ```
 </RequestExample>
 
