@@ -135,6 +135,12 @@
             ]
           },
           {
+            "group": "Geo Data",
+            "pages": [
+              "api-reference/geo-data"
+            ]
+          },
+          {
             "group": "Collection & disbursement",
             "pages": [
               "api-reference/countries/collection-and-disbursement"

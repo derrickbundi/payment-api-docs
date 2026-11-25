@@ -1,0 +1,147 @@
+---
+title: Geo Data
+api: POST /account/geo-data
+description: Countries and the divisions under them, from regions and counties down to sub-counties and parishes.
+---
+
+Geo data is the place list for an address. Each country names its own levels. Call this with no filters to see those levels, then pass `country` and one level at a time until you reach the place you need.
+
+Levels differ by country:
+
+| Country | Levels, in order |
+|---------|------------------|
+| Ghana | `region`, `district` |
+| Kenya | `county`, `subcounty` |
+| Nigeria | `state`, `lga` |
+| Tanzania | `region`, `district` |
+| Uganda | `district`, `county`, `subcounty`, `parish` |
+
+Pass filters in that order. A subcounty request also needs the district and county above it. Matching ignores case. Older spellings are accepted and returned under the current name, such as `Taita-Taveta` for `Taita Taveta`. Plural keys are accepted when they name that country's level: `counties`, `subcounties`, `districts`, `regions`, `states`, `lgas`, `parishes`.
+
+<ParamField body="country" type="string">
+  Country name: `Ghana`, `Kenya`, `Nigeria`, `Tanzania`, or `Uganda`. Omit it to list countries and their levels.
+</ParamField>
+
+<ParamField body="region" type="string">
+  Ghana or Tanzania region. Returns its districts.
+</ParamField>
+
+<ParamField body="district" type="string">
+  Ghana or Tanzania district, or a Uganda district. A Uganda district returns its counties.
+</ParamField>
+
+<ParamField body="county" type="string">
+  Kenya county, or a Uganda county. A Kenya county returns sub-counties. A Uganda county requires `district` and returns sub-counties.
+</ParamField>
+
+<ParamField body="subcounty" type="string">
+  Kenya sub-county, which requires `county`, or a Uganda sub-county, which requires `district` and `county` and returns parishes.
+</ParamField>
+
+<ParamField body="state" type="string">
+  Nigeria state. Returns its local government areas.
+</ParamField>
+
+<ParamField body="lga" type="string">
+  Nigeria local government area. Requires `state`.
+</ParamField>
+
+<ParamField body="parish" type="string">
+  Uganda parish. Requires `district`, `county`, and `subcounty`.
+</ParamField>
+
+`data.level` is the level of `data.places`. It is `null` when the last filter is a place with no children. Each place includes `name` and `has_children`. A place may include `aliases`.
+
+### Sample requests
+
+List countries and the filter names each one accepts:
+
+```bash
+curl -X POST "https://api.xwift.africa/account/geo-data" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+Kenya counties:
+
+```bash
+curl -X POST "https://api.xwift.africa/account/geo-data" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"country":"Kenya"}'
+```
+
+Sub-counties in Nairobi:
+
+```bash
+curl -X POST "https://api.xwift.africa/account/geo-data" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"country":"Kenya","county":"Nairobi"}'
+```
+
+Districts in Greater Accra:
+
+```bash
+curl -X POST "https://api.xwift.africa/account/geo-data" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"country":"Ghana","region":"Greater Accra"}'
+```
+
+Parishes under Kampala Central:
+
+```bash
+curl -X POST "https://api.xwift.africa/account/geo-data" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"country":"Uganda","district":"Kampala","county":"Kampala Central Division","subcounty":"Kampala Central"}'
+```
+
+### Errors
+
+| Message | When |
+|---------|------|
+| `country is required.` | A level filter was sent without `country` |
+| `Unsupported country. Allowed: Ghana, Kenya, Nigeria, Tanzania, Uganda.` | `country` is not one of those names |
+| `Unknown filter {key}. Use: {levels}.` | The filter is not a level for that country |
+| `Pass {level} before {level}.` | A deeper level was sent without the level above it |
+| `Unknown {level}.` | The place name is not under the parent you sent |
+| `An unexpected error occurred. Please try again.` | The division list could not be read |
+
+<RequestExample>
+```bash
+curl -X POST "{{base_url}}/account/geo-data" \
+  -H "x-api-key: YOUR_CONSUMER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"country":"Kenya","county":"Nairobi"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "code": 200,
+  "message": "Geo data",
+  "data": {
+    "country": "Kenya",
+    "levels": ["county", "subcounty"],
+    "level": "subcounty",
+    "filters": {
+      "county": "Nairobi"
+    },
+    "places": [
+      {
+        "name": "Dagoretti",
+        "has_children": false
+      },
+      {
+        "name": "Westlands",
+        "has_children": false
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
